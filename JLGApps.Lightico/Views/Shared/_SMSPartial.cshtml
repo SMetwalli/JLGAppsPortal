@@ -1,0 +1,31 @@
+﻿@model JLGApps.Lightico.ViewModels.FileLoaderViewModel
+<div class="form-group mb-4">
+    <label for="exampleFormControlTextarea1">Message Body</label>
+    <textarea id="smsBody" class="form-control" form="emailer" name="txtMessage" rows="3">@Model.SMSBody</textarea>
+</div>
+<div class="input-group mb-4">
+    <input id="smsRecipient" type="text" class="form-control" form="emailer" name="txtRecipient" value="@Model.SMSRecipient" placeholder="Recipient" aria-label="Recipient's username">
+
+    <div class="input-group-append">
+        <button id="btnSendSms" class="btn btn-primary" type="button">Send SMS</button>
+    </div>
+
+</div>
+<div class="progress br-30">
+    <div id="smsProgress" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">0%</div>
+</div>
+<div>
+
+    @{
+        if (Model.Recipients != null)
+        {
+            var headerRow = Model.Recipients.Where(p => p.RowIndex == 1).FirstOrDefault();
+            foreach (var header in headerRow.Columns)
+            {
+                string field = string.Concat("[[", @header.Column.ToUpper(), "]]", " ");
+                @field
+            }
+        }
+    }
+</div>
+<br />

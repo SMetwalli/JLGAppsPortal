@@ -1,0 +1,40 @@
+﻿@model JLGProcessPortal.ViewModels.FileLoaderViewModel
+
+@{if (Model != null)
+    {
+        if (Model.Recipients != null)
+        {
+            <thead>
+                <tr>
+                    <th class="checkbox-column">RecordId</th>
+                    @{ var headerRow = Model.Recipients.Where(p => p.RowIndex == 1).FirstOrDefault();
+                        foreach (var header in headerRow.Columns)
+                        {
+
+                            <th>@header.Column</th>
+
+                        }
+                    }
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var rows = Model.Recipients.Where(p => p.RowIndex > 1);
+                    foreach (var row in rows)
+                    {
+                        <tr>
+                            <td class="checkbox-column"> @row.RowIndex </td>
+                            @foreach (var col in row.Columns)
+                            {
+
+                                <td> @col.Column</td>
+                            }
+                        </tr>
+                    }
+                }
+            </tbody>
+
+        }
+    }
+}
+

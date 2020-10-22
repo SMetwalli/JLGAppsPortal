@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30611.23
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JLGApps.SignNow", "JLGApps.SignNow\JLGApps.SignNow.csproj", "{EA5C669D-2262-4767-99E1-779C5942542D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "JLGApps.Lightico", "JLGApps.Lightico\JLGApps.Lightico.csproj", "{98157F2A-D30F-46CF-B2E5-F4E0AFE1A358}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA5C669D-2262-4767-99E1-779C5942542D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA5C669D-2262-4767-99E1-779C5942542D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA5C669D-2262-4767-99E1-779C5942542D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA5C669D-2262-4767-99E1-779C5942542D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98157F2A-D30F-46CF-B2E5-F4E0AFE1A358}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98157F2A-D30F-46CF-B2E5-F4E0AFE1A358}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98157F2A-D30F-46CF-B2E5-F4E0AFE1A358}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98157F2A-D30F-46CF-B2E5-F4E0AFE1A358}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0808F495-8257-4A00-8D87-9F4416C70F5A}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,33 @@
+﻿@model JLGApps.Lightico.ViewModels.FileLoaderViewModel
+<div class="row">
+    <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+        <div class="form-group mb-4 mt-3">
+            <label for="xlsxFile">Excel File Upload (.xlsx)</label>
+
+            <div class="custom-file">
+                <input type="file" id="btnUploadedFile" class="custom-file-input" name="xslxFile" accept=".xlsx">
+                <label id="fileName" class="custom-file-label" for="btnUploadedFile">Choose a excel file</label>
+                <input id="btnExcelFileUpload" type="submit" value="Import Excel Sheet" class="mt-4 mb-4 btn btn-primary">
+            </div>
+            @{
+                @if (Model != null)
+                {
+                    @if (Model.FileAndPath != null)
+                    {
+                        <label id="fileAndPath">@Model.FileAndPath</label>
+                    }
+                }
+            }
+            <textarea id="@Html.IdFor(p => p.EmailBody)" name="@Html.IdFor(p => p.EmailBody)" hidden class="emailBodyTextVerbage"></textarea>
+            <input type="hidden" name="emailBody" id="upload_EmailBodyText" />
+            <input type="hidden" name="emailSubject" id="upload_EmailSubject" />
+            <input type="hidden" name="emailSender" id="upload_EmailSender" />
+            <input type="hidden" name="emailRecipient" id="upload_EmailRecipient" />
+            <input type="hidden" name="txtMessage" id="upload_SMSBody" />
+            <input type="hidden" name="txtRecipient" id="upload_SMSRecipient" />
+            <input type="hidden" name="folderId" id="upload_TemplateFolderId" />
+            <input type="hidden" name="selectedFolder" id="upload_TemplateFolder" />
+            <input type="hidden" name="casenumberExcelHeader" id="upload_FolderCasenumber" />
+        </div>
+    </div>
+</div>

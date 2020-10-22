@@ -1,0 +1,45 @@
+﻿@model JLGApps.Lightico.ViewModels.FileLoaderViewModel
+<table id="template-dtListing" class="table style-1 table-hover non-hover">
+    <thead>
+        <tr>
+            <th class="checkbox-column" style="display:none;"> Template ID </th>
+            <th>Template Name</th>
+            <th>Template Folder</th>
+            <th style="text-align: center;">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model.MultipleTemplateProfiles != null)
+        {
+            @foreach (var templateName in Model.MultipleTemplateProfiles)
+            {
+                <tr>
+                    <td class="checkbox-column" style="display:none;">@templateName.templateFolderID</td>
+
+                    <td class="user-name">
+                        @templateName.Name
+                    </td>
+                    <td>
+                        @templateName.folderName
+                    </td>
+
+                    <td class="text-center"> <button id="btnCreateDocument" class="btn btn-primary">Create Document</button> </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+<textarea id="@Html.IdFor(p => p.EmailBody)" name="@Html.IdFor(p => p.EmailBody)" hidden class="emailBodyTextVerbage"></textarea>
+<input type="hidden" name="emailBody" id="documentCreate_EmailBody" />
+<input type="hidden" name="emailSubject" id="documentCreate_EmailSubject" />
+<input type="hidden" name="emailSender" id="documentCreate_EmailSender" />
+<input type="hidden" name="emailRecipient" id="documentCreate_EmailRecipient" />
+<input type="hidden" name="txtMessage" id="documentCreate_SMSBody" />
+<input type="hidden" name="txtRecipient" id="documentCreate_SMSRecipient" />
+<input type="hidden" name="folderId" id="documentCreate_TemplateFolderId" />
+<input type="hidden" name="selectedFolder" id="documentCreate_TemplateFolder" />
+<input type="hidden" name="casenumberExcelHeader" id="documentCreate_FolderCasenumber" />
+<div class="progress br-30">
+    <div id="progress" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">0%</div>
+</div>

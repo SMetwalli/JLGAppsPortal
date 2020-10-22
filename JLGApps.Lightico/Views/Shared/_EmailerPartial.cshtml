@@ -1,0 +1,74 @@
+﻿@model JLGApps.Lightico.ViewModels.FileLoaderViewModel
+<div class="form-group mb-4">
+    <div style="width:50%;margin-left:16%">
+
+        <div class="col-sm-12">
+            <label for="exampleFormControlInput2">Subject</label>
+
+            <input type="text" name="emailSubject" class="form-control" id="subject" value="@Model.EmailSubject" required>
+
+
+            <label for="exampleFormControlInput2">To Address</label>
+
+            <input type="text" name="emailRecipientAddress" class="form-control" id="recipientEmail" value="@Model.EmailRecipient" required>
+
+            <label for="exampleFormControlSelect1">From</label><br />
+
+            <select id="from" name="sender" class="selectpicker mb-4" data-width="fit">
+
+                @foreach (var mailbox in Model.MailBoxes)
+                {
+                    string selectedFlag = "";
+                    @if (mailbox.Mailbox == Model.EmailSender)
+                    {
+                        selectedFlag = "Selected";
+                    }
+                    <!option @selectedFlag> @mailbox.Mailbox</!option>
+                }
+
+            </select>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div>
+
+            <div class="row">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 nopadding">
+
+                            <textarea id="@Html.IdFor(p => p.EmailBody)" name="@Html.IdFor(p => p.EmailBody)" hidden class="emailBodyTextVerbage"></textarea>
+                            <div class="form-control summernote">@Html.Raw(Model.EmailBody)</div>
+                            <input type="hidden" name="emailBody" id="sendEmail_EmailBody" />
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12 nopadding">
+                            <textarea style="border:none;width:950px;resize:none;">
+                                                                            @{
+                                                                                if (Model.Recipients != null)
+                                                                                {
+                                                                                    var headerRow = Model.Recipients.Where(p => p.RowIndex == 1).FirstOrDefault();
+                                                                                    foreach (var header in headerRow.Columns)
+                                                                                    {
+
+                                                                                        string field = string.Concat("[[", @header.Column.ToUpper(), "]]", " ");
+                                                                                        @field
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            </textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-left:2%">
+                <input type="submit" name="time" id="btnSendEmail" value="Send Email" class="mt-4 mb-4 btn btn-primary">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="progress br-30">
+    <div id="emailProgress" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">0%</div>
+</div>

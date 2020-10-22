@@ -1,0 +1,113 @@
+﻿@model JLGApps.Lightico.ViewModels.FileLoaderViewModel
+<div class="table-responsive">
+    <table class="table mb-4 contextual-table">
+        <thead>
+            <tr>
+                <th>Template Folder</th>
+
+                <th>Mapped Case Number</th>
+                <th>Mapped Full Name</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="table-default">
+                <td>
+                    <select size="1" id="selectedTemplateFolder" class="form-control" style="width:250px">
+                        <!option>NONE</!option>
+                        @if (Model.TemplateFolderList != null)
+                        {
+                            @foreach (var folder in Model.TemplateFolderList.Select(o => o.Path).Distinct().ToList())
+                            {
+                                string selectedFolder = "";
+
+
+                                if (Model.SelectedTemplateFolder == folder)
+                                {
+                                    selectedFolder = "Selected";
+
+                                }
+
+                                <!option @selectedFolder value="@folder">
+                                    @folder
+                                </!option>
+                            }
+                        }
+
+                    </select>
+                </td>
+
+                <td>
+                    <select size="1" id="casenumMergeHeader" class="form-control" name="casenumberExcelHeader" style="width:250px;">
+                        <option>NONE</option>
+                        @if (Model.Recipients != null)
+                        {
+
+
+                            var excelHeader = Model.Recipients.FirstOrDefault();
+
+
+                            foreach (var column in excelHeader.Columns)
+                            {
+                                string selectedFolder = "";
+                                if (column.Column == Model.CaseNumberExcelHeader)
+                                {
+                                    selectedFolder = "Selected";
+
+                                }
+                                <!option @selectedFolder>
+                                    @column.Column
+                                </!option>
+                            }
+
+
+                        }
+                    </select>
+                </td>
+                <td>
+                    <select size="1" id="fullNameMergeHeader" class="form-control" name="fullNameExcelHeader" style="width:250px;">
+                        <option>NONE</option>
+                        @if (Model.Recipients != null)
+                        {
+
+
+                            var excelHeader = Model.Recipients.FirstOrDefault();
+
+
+                            foreach (var column in excelHeader.Columns)
+                            {
+                                string selectedFolder = "";
+                                if (column.Column == Model.FullNameExcelHeader)
+                                {
+                                    selectedFolder = "Selected";
+
+                                }
+                                <!option @selectedFolder>
+                                    @column.Column
+                                </!option>
+                            }
+
+
+                        }
+                    </select>
+                </td>
+                <td>
+                    <input id="loadTemplates" type="submit" value="Load Templates" class="btn btn-primary" style="float:left">
+                </td>
+            </tr>
+            <tr>
+            </tr>
+        </tbody>
+    </table>
+    <textarea id="@Html.IdFor(p => p.EmailBody)" name="@Html.IdFor(p => p.EmailBody)" hidden class="emailBodyTextVerbage"></textarea>
+    <input type="hidden" name="emailBody" id="templateSelect_EmailBody" />
+    <input type="hidden" name="emailRecipientAddress" id="templateSelect_EmailRecipient" />
+    <input type="hidden" name="emailSubject" id="templateSelect_EmailSubject" />
+    <input type="hidden" name="emailSender" id="templateSelect_EmailFrom" />
+    <input type="hidden" name="xslxFile" id="templateSelect_ExcelFile" />
+    <input type="hidden" name="folderId" id="templateSelect_TemplateFolderId" />
+    <input type="hidden" name="selectedFolder" id="templateSelect_TemplateFolder" />
+    <input type="hidden" name="casenumberExcelHeader" id="templateSelect_FolderCasenumber" />
+    <input type="hidden" name="txtMessage" id="templateSelect_SMS" />
+    <input type="hidden" name="txtRecipient" id="templateSelect_RecipientSMS" />
+</div>
