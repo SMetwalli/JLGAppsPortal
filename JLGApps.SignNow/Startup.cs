@@ -30,7 +30,7 @@ namespace JLGProcessPortal
            
             services.AddControllers().AddNewtonsoftJson(options =>{options.SerializerSettings.ContractResolver = new DefaultContractResolver();});
             services.AddDbContext<EmailTemplateDetailsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("jlgAppConnection")));
-            services.Configure<AuthenticationModel>(Configuration.GetSection("SIGNNOW_SETTINGS"));
+            services.Configure<AuthenticationModel>(Configuration.GetSection("AUTH_SETTINGS"));
            
 
 
