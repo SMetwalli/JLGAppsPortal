@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using JLGProcessPortal.Models;
 using JLGProcessPortal.Models.EmailLogs;
 using JLGProcessPortal.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using RestSharp;
 using RestSharp.Authenticators;
 
@@ -14,6 +16,11 @@ namespace JLGProcessPortal.Controllers
 {
     public class LogsController : Controller
     {
+        private AuthenticationModel _authConfiguration;
+        public LogsController(IOptions<AuthenticationModel> authConfiguration)
+        {
+            _authConfiguration = authConfiguration.Value;
+        }
         [HttpGet]
         [Route("Logs")]
         [Route("Logs/Index")]

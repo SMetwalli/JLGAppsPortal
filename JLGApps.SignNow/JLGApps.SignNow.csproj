@@ -6,12 +6,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Controllers\HomeController.cs" />
-    <Compile Remove="Controllers\Vendors\SignNow\DocumentProcessor.cs" />
+    <Compile Remove="Controllers\Vendors\**" />
+    <Content Remove="Controllers\Vendors\**" />
+    <EmbeddedResource Remove="Controllers\Vendors\**" />
+    <None Remove="Controllers\Vendors\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Compile Remove="Controllers\HomeController.cs" />
+    <Compile Remove="Controllers\SignNowApiCalls\DocumentProcessor.cs" />
   </ItemGroup>
 
   <ItemGroup>

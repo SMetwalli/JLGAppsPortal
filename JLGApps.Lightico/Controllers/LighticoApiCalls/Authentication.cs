@@ -8,9 +8,9 @@ namespace JLGApps.Lightico.Controllers.LighticoApis
 {
     public class Authentication
     {
-        private  LighticoAuthorizationModel _signNowConfiguration;
+        private  AuthenticationModel _signNowConfiguration;
 
-        public Authentication(LighticoAuthorizationModel signNowConfiguration)
+        public Authentication(AuthenticationModel signNowConfiguration)
         {
             _signNowConfiguration = signNowConfiguration;
         }

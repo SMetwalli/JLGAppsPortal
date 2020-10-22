@@ -1,20 +1,25 @@
-﻿
-using JLGProcessPortal.Controllers.Vendors.SignNow;
+﻿using JLGProcessPortal.Models;
 using JLGProcessPortal.Models.SignNow;
 using JLGProcessPortal.ViewModels;
 using RestSharp;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Text.Json;
-using System.Threading.Tasks;
 
-namespace JLGProcessPortal.Controllers.Vendors.SignNow
+namespace JLGProcessPortal.Controllers.ApiCalls
 {
+    public interface ISignNow
+    {
+        List<TemplateInfo> GetTemplates(AuthenticationModel authentication, string folderName, string folderId);
+        string GetTemplateInfo(AuthenticationModel authentication, string folderId);
+
+        FolderList GetFolders(AuthenticationModel authentication);
+    }
+
     public class SignNowTemplateRequest: ISignNow
     {
-        public List<TemplateInfo> GetTemplates(SignNowAuth authentication,string folderName,string folderId)
+        public List<TemplateInfo> GetTemplates(AuthenticationModel authentication,string folderName,string folderId)
         {
           
                 var templateJson = GetTemplateInfo(authentication, folderId);
@@ -33,14 +38,14 @@ namespace JLGProcessPortal.Controllers.Vendors.SignNow
         }
 
 
-        public string GetTemplateInfo(SignNowAuth authentication,string folderId)
+        public string GetTemplateInfo(AuthenticationModel authentication,string folderId)
         {
-            string baseUrl = "https://api.signnow.com/";
+       
             var SignNowAuthentication = new Authentication();
             string accessToken = SignNowAuthentication.GenerateToken(authentication);
             var token = JsonSerializer.Deserialize<AuthToken>(accessToken);
             dynamic results = "";
-            var client = new RestClient { BaseUrl = new Uri(baseUrl) };
+            var client = new RestClient { BaseUrl = new Uri(authentication.SIGNNOW_API_URL) };
 
             var request = new RestRequest($"folder/{folderId}?with_team_documents =true", Method.GET)
                 .AddHeader("Content-Type", "application/json")
@@ -59,7 +64,7 @@ namespace JLGProcessPortal.Controllers.Vendors.SignNow
         }
 
 
-        public FolderList GetFolders(SignNowAuth authentication)
+        public FolderList GetFolders(AuthenticationModel authentication)
         {
             string baseUrl = "https://api.signnow.com/";
             var SignNowAuthentication = new Authentication();

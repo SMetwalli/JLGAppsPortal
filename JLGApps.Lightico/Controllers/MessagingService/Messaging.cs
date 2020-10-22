@@ -1,4 +1,5 @@
-﻿using RestSharp;
+﻿using JLGApps.Lightico.Models;
+using RestSharp;
 using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 
-namespace JLGMassEmailer.Controllers.MessagingService
+namespace JLGApps.Lightico.Controllers.MessagingService
 {
     public interface IMessaging
     {
@@ -16,6 +17,12 @@ namespace JLGMassEmailer.Controllers.MessagingService
     }
     public class Messaging : IMessaging
     {
+        private AuthenticationModel _authConfiguration;
+        public Messaging(AuthenticationModel authConfiguration)
+        {
+            _authConfiguration = authConfiguration;
+        }            
+
         public IRestResponse SendEmail(IDictionary<string, string> emailParameters)
         {
             string recipient = emailParameters["EMAIL_RECIPIENT"].ToString();
@@ -25,8 +32,8 @@ namespace JLGMassEmailer.Controllers.MessagingService
             string subject = emailParameters["EMAIL_SUBJECT"].ToString();
             string from = emailParameters["EMAIL_SENDER"].ToString();
             RestClient client = new RestClient();
-            client.BaseUrl = new Uri("https://api.mailgun.net/v3");
-            client.Authenticator = new HttpBasicAuthenticator("api", "key-4a19e783bf5912dfe99c3dd97744b882");
+            client.BaseUrl = new Uri(_authConfiguration.MAILGUN_URL);
+            client.Authenticator = new HttpBasicAuthenticator(_authConfiguration.MAILGUN_USERNAME, _authConfiguration.MAILGUN_KEY);
             RestRequest request = new RestRequest();
             request.AddParameter("domain", "johnsonlawgroup.com", ParameterType.UrlSegment);
             request.Resource = "{domain}/messages";
@@ -42,8 +49,8 @@ namespace JLGMassEmailer.Controllers.MessagingService
         {
             string body =  smsParameters["SMS_BODY"].ToString();
             string phoneNumber = smsParameters["SMS_RECIPIENT"].ToString();
-            const string accountSid = "AC141b1cbd2d307bb249ab6af435e12c31";
-            const string authToken = "0538ddcedab0594ebf6aa8f2b53702d4";
+             string accountSid = _authConfiguration.TWILIO_ID;
+             string authToken = _authConfiguration.TWILIO_TOKEN;
 
             TwilioClient.Init(accountSid, authToken);
 

@@ -15,13 +15,13 @@ namespace JLGApps.Lightico.Controllers.LighticoApisCalls
         List<TemplateAttributes> GetTemplates(List<FolderList> folders, string folderName, string folderId);
       
 
-        List<FolderList> GetFolders(LighticoAuthorizationModel authentication);
+        List<FolderList> GetFolders(AuthenticationModel authentication);
     }
     public class Templates : ILigticoTemplates
     {
-        private LighticoAuthorizationModel _signNowConfiguration;
+        private AuthenticationModel _signNowConfiguration;
 
-        public Templates(LighticoAuthorizationModel signNowConfiguration)
+        public Templates(AuthenticationModel signNowConfiguration)
         {
             _signNowConfiguration = signNowConfiguration;
         }
@@ -44,7 +44,7 @@ namespace JLGApps.Lightico.Controllers.LighticoApisCalls
      
 
 
-        public List<FolderList> GetFolders(LighticoAuthorizationModel authentication)
+        public List<FolderList> GetFolders(AuthenticationModel authentication)
         {
             string apiUri = _signNowConfiguration.LIGHTICO_API_URL;
             var lighticoAuthentication = new Authentication(_signNowConfiguration);

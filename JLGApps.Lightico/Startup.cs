@@ -29,7 +29,7 @@ namespace JLGApps.Lightico
 
             services.AddControllers().AddNewtonsoftJson(options => { options.SerializerSettings.ContractResolver = new DefaultContractResolver(); });
             services.AddDbContext<ViewTemplateDataDetailsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("jlgAppConnection")));
-            services.Configure<LighticoAuthorizationModel>(Configuration.GetSection("AUTH_SETTINGS"));
+            services.Configure<AuthenticationModel>(Configuration.GetSection("AUTH_SETTINGS"));
 
 
 
