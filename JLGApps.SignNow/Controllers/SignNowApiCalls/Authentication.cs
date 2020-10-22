@@ -1,4 +1,5 @@
-﻿using JLGProcessPortal.Models.SignNow;
+﻿using JLGProcessPortal.Models;
+using JLGProcessPortal.Models.SignNow;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -6,11 +7,11 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace JLGProcessPortal.Controllers.Vendors.SignNow
+namespace JLGProcessPortal.Controllers.ApiCalls
 {
     public class Authentication
     {
-        public string GenerateToken(SignNowAuth _signNowConfiguration)
+        public string GenerateToken(AuthenticationModel _signNowConfiguration)
         {
 
             string baseUrl = _signNowConfiguration.SIGNNOW_API_URL;

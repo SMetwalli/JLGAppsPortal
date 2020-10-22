@@ -17,7 +17,7 @@ namespace JLGApps.Lightico.Models
    
     }
 
-    public class LighticoAuthorizationModel
+    public class AuthenticationModel
     {
 
 
@@ -27,6 +27,15 @@ namespace JLGApps.Lightico.Models
         public string LIGHTICO_PASSWORD { get; set; }
         public string LIGHTICO_CLIENT_ID { get; set; }
         public string LIGHTICO_BASIC { get; set; }
+
+        public string MAILGUN_USERNAME { get; set; }
+        public string MAILGUN_KEY { get; set; }
+
+        public string MAILGUN_URL { get; set; }
+
+        public string TWILIO_ID { get; set; }
+
+        public string TWILIO_TOKEN { get; set; }
 
 
     }

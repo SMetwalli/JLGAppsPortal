@@ -10,23 +10,22 @@ using System.IO;
 using Microsoft.AspNetCore.Http;
 using JLGProcessPortal.ViewModels;
 using Microsoft.AspNetCore.Routing;
-using JLGProcessPortal.Controllers.Vendors.SignNow;
 using System.Text.Json;
 using ClosedXML.Excel;
 using JLGProcessPortal.Models.SignNow;
 using Microsoft.Extensions.Options;
-using JLGProcessPortal.Controllers.Vendors;
 using System.Text;
+using JLGProcessPortal.Controllers.ApiCalls;
 
 namespace JLGProcessPortal.Controllers
 {
 
     public class MassMailerController : Controller
     {
-        private SignNowAuth _signNowConfiguration { get; set; }
-        public MassMailerController(IOptions<SignNowAuth> signNowConfiguration)
+        private AuthenticationModel _authConfiguration;
+        public MassMailerController(IOptions<AuthenticationModel> authConfiguration)
         {
-            _signNowConfiguration = signNowConfiguration.Value;
+            _authConfiguration = authConfiguration.Value;
         }
 
         [Route("")]
@@ -39,7 +38,7 @@ namespace JLGProcessPortal.Controllers
             ISignNow templates = new SignNowTemplateRequest();
             
 
-            var templateFolders = templates.GetFolders(_signNowConfiguration);
+            var templateFolders = templates.GetFolders(_authConfiguration);
           
 
             var envelope = new FileLoaderViewModel
@@ -77,7 +76,7 @@ namespace JLGProcessPortal.Controllers
             var temp = new List<MergeFields>();
             if (folderId != null && folderId!="NONE")
             {
-                var templateProfile = templates.GetTemplates(_signNowConfiguration, selectedFolder.Trim(), folderId);
+                var templateProfile = templates.GetTemplates(_authConfiguration, selectedFolder.Trim(), folderId);
 
                 var singleTempProfile = templateProfile.Where(t => t.templateFolderID == templateID).FirstOrDefault();
                 if (singleTempProfile != null)
@@ -85,7 +84,7 @@ namespace JLGProcessPortal.Controllers
                 if (templateProfile != null)
                     envelope.MultipleTemplateProfiles = templateProfile;
             }
-            var templateFolders = templates.GetFolders(_signNowConfiguration);
+            var templateFolders = templates.GetFolders(_authConfiguration);
 
             if (!string.IsNullOrEmpty(excelFile))
             {
@@ -345,7 +344,7 @@ namespace JLGProcessPortal.Controllers
 
                             }
 
-                            var EmailerHost = new Messaging();
+                            var EmailerHost = new Messaging(_authConfiguration);
 
                             //Dictionary for Mailgun
                             email = new Dictionary<string, string>()
@@ -372,7 +371,7 @@ namespace JLGProcessPortal.Controllers
                         //VALIDATE FOR A VALID EMAIL ADDRESS
                         try
                         {
-                            var EmailerHost = new Messaging();
+                            var EmailerHost = new Messaging(_authConfiguration);
 
                             //Dictionary for Mailgun
                             email = new Dictionary<string, string>()
@@ -468,7 +467,7 @@ namespace JLGProcessPortal.Controllers
 
                         }
 
-                        var EmailerHost = new Messaging();
+                        var EmailerHost = new Messaging(_authConfiguration);
 
                         //Dictionary for Twilio
                        var  sms = new Dictionary<string, string>()
@@ -567,22 +566,22 @@ namespace JLGProcessPortal.Controllers
                                 }
                                 string jsonSmartFields = jsonPayload.Append("}],").Append('"').Append("client_timestamp").Append('"').Append(":").Append('"').Append("UTC time stamp").Append('"').Append("}").ToString();
 
-                                var SignNowAuthentication = new Vendors.SignNow.Authentication();
-                                string accessToken = SignNowAuthentication.GenerateToken(_signNowConfiguration);
+                                var SignNowAuthentication = new Authentication();
+                                string accessToken = SignNowAuthentication.GenerateToken(_authConfiguration);
                                 var auth = JsonSerializer.Deserialize<AuthToken>(accessToken);
 
                                 ISignNowDocumentCreator Document = new SignNowDocumentCreator();
 
-
-                                string result = Document.GenerateDocument(auth.access_token, _signNowConfiguration.SIGNNOW_API_URL, document);
+                                string apiUrl = _authConfiguration.SIGNNOW_API_URL;
+                                string result = Document.GenerateDocument(auth.access_token, apiUrl, document);
 
                                 var jsonDocument = JsonSerializer.Deserialize<DocumentParameters>(result);
                                 document.id = jsonDocument.id;
-                                Document.MergeSmartFields(auth.access_token, _signNowConfiguration.SIGNNOW_API_URL, jsonSmartFields, document);
+                                Document.MergeSmartFields(auth.access_token, apiUrl, jsonSmartFields, document);
 
-                                Document.MoveDocument(auth.access_token, _signNowConfiguration.SIGNNOW_API_URL, document);
+                                Document.MoveDocument(auth.access_token, apiUrl, document);
 
-                                string link = Document.GenerateLink(auth.access_token, _signNowConfiguration.SIGNNOW_API_URL, document);
+                                string link = Document.GenerateLink(auth.access_token, apiUrl, document);
                                 var signNowLink = JsonSerializer.Deserialize<DocumentParameters>(link);
                                 document.url_no_signup = signNowLink.url_no_signup;
                                 //Insert Column

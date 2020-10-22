@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace JLGProcessPortal.Controllers.Vendors.SignNow
+namespace JLGProcessPortal.Controllers.ApiCalls
 {
     public interface ISignNowDocumentCreator
     {
@@ -72,8 +72,6 @@ namespace JLGProcessPortal.Controllers.Vendors.SignNow
         }
         public  void MergeSmartFields(string accessToken, string apiUrl, string smartFields, DocumentParameters document)
         {
-            try
-            {
                 dynamic results = "";
                 var client = new RestClient { BaseUrl = new Uri(apiUrl) };
 
@@ -84,21 +82,13 @@ namespace JLGProcessPortal.Controllers.Vendors.SignNow
 
                 var response = client.Execute(request);
 
-                if (response.StatusCode == HttpStatusCode.OK)
+                if (response.StatusCode != HttpStatusCode.OK)
                 {
 
-
-                }
-                else
-                {
                     Console.WriteLine(response.Content.ToString());
                     results = response.Content.ToString();
                 }
-            }
-            catch (Exception ex)
-            {
-
-            }
+                
 
         }
 

@@ -23,10 +23,10 @@ namespace JLGApps.Lightico.Controllers
 
     public class MassMailerController : Controller
     {
-        private LighticoAuthorizationModel _signNowConfiguration { get; set; }
-        public MassMailerController(IOptions<LighticoAuthorizationModel> signNowConfiguration)
+        private AuthenticationModel _authConfiguration;
+        public MassMailerController(IOptions<AuthenticationModel> authConfiguration)
         {
-            _signNowConfiguration = signNowConfiguration.Value;
+            _authConfiguration = authConfiguration.Value;
         }
 
         [Route("")]
@@ -36,10 +36,10 @@ namespace JLGApps.Lightico.Controllers
         {
             var mailboxes = new MailboxSelection();
             var mailboxesList = mailboxes.GetMailboxes();
-            ILigticoTemplates templates = new Templates(_signNowConfiguration);
+            ILigticoTemplates templates = new Templates(_authConfiguration);
             
 
-            var templateFolders = templates.GetFolders(_signNowConfiguration);
+            var templateFolders = templates.GetFolders(_authConfiguration);
           
 
             var envelope = new FileLoaderViewModel
@@ -73,9 +73,9 @@ namespace JLGApps.Lightico.Controllers
             var mailboxesList = mailboxes.GetMailboxes();
             var RecipientLoader = new ExcelSheetLoader();
             var envelope = new FileLoaderViewModel();
-            ILigticoTemplates templates = new Templates(_signNowConfiguration);
+            ILigticoTemplates templates = new Templates(_authConfiguration);
 
-            var templateFolders = templates.GetFolders(_signNowConfiguration);
+            var templateFolders = templates.GetFolders(_authConfiguration);
             if (folderId != null && folderId!="NONE")
             {
                 var templateProfile = templates.GetTemplates(templateFolders, selectedFolder.Trim(), folderId);
@@ -310,7 +310,7 @@ namespace JLGApps.Lightico.Controllers
                     { messageAlert = string.Concat(messageAlert, "\n\rMissing or incomplete data in excel worksheet!!"); }
                 }
 
-
+                var EmailerHost = new Messaging(_authConfiguration);
 
                 if (recipientEmail.RecipientsList != null && recipient.Contains("[[") && recipient.Contains("]]"))
                 {
@@ -321,6 +321,7 @@ namespace JLGApps.Lightico.Controllers
                         int currentRow = 0;
                         int totalRecipientCount = recipientEmail.RecipientsList.Count() - 1;
                         string bodyTemplate = body;
+                      
                         foreach (var recipientRow in recipientEmail.RecipientsList.Skip(1))
                         {
                             currentRow++;
@@ -350,10 +351,8 @@ namespace JLGApps.Lightico.Controllers
 
                             }
 
-                            var EmailerHost = new Messaging();
-
                             //Dictionary for Mailgun
-                            email = new Dictionary<string, string>()
+                        email = new Dictionary<string, string>()
                         {
                                 { "EMAIL_RECIPIENT", recipient},
                                 { "EMAIL_BODY", body.Trim()},
@@ -377,7 +376,7 @@ namespace JLGApps.Lightico.Controllers
                         //VALIDATE FOR A VALID EMAIL ADDRESS
                         try
                         {
-                            var EmailerHost = new Messaging();
+                          
 
                             //Dictionary for Mailgun
                             email = new Dictionary<string, string>()
@@ -473,7 +472,7 @@ namespace JLGApps.Lightico.Controllers
 
                         }
 
-                        var EmailerHost = new Messaging();
+                        var EmailerHost = new Messaging(_authConfiguration);
 
                         //Dictionary for Twilio
                        var  sms = new Dictionary<string, string>()
@@ -608,8 +607,8 @@ namespace JLGApps.Lightico.Controllers
                                 string customerDocument = jsoneSignDocumentPayload.Append("\r\n    }\r\n}").ToString();
 
 
-                                var lighticoAuthentication = new Authentication(_signNowConfiguration);
-                                var Document = new DocumentCreator(_signNowConfiguration);
+                                var lighticoAuthentication = new Authentication(_authConfiguration);
+                                var Document = new DocumentCreator(_authConfiguration);
                                 var authorizationToken = lighticoAuthentication.GenerateToken();
                              
                                 var session = Document.CreateNewSession(authorizationToken.access_token, customerSession);

@@ -23,8 +23,8 @@ namespace JLGApps.Lightico.Controllers.LighticoApisCalls
     public class DocumentCreator: IDocumentCreator
     {
 
-        private LighticoAuthorizationModel _signNowConfiguration;
-        public DocumentCreator(LighticoAuthorizationModel signNowConfiguration)
+        private AuthenticationModel _signNowConfiguration;
+        public DocumentCreator(AuthenticationModel signNowConfiguration)
         {
             _signNowConfiguration=signNowConfiguration;
         }

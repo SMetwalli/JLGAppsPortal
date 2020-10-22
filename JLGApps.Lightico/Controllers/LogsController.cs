@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
+using JLGApps.Lightico.Models;
 using JLGApps.Lightico.Models.EmailLogs;
 using JLGApps.Lightico.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using RestSharp;
 using RestSharp.Authenticators;
 
@@ -14,6 +16,12 @@ namespace JLGApps.Lightico.Controllers
 {
     public class LogsController : Controller
     {
+        private AuthenticationModel _authConfiguration; 
+        public LogsController(IOptions<AuthenticationModel> authConfiguration)
+        {
+            _authConfiguration = authConfiguration.Value;
+        }
+
         [HttpGet]
         [Route("Logs")]
         [Route("Logs/Index")]
@@ -58,7 +66,9 @@ namespace JLGApps.Lightico.Controllers
                 case "Subject":
                     if (emailStatusType == "Failed")
                     {
-                        jsonResponse = GetLogsBySubjectFailed(searchValue, startTime, endTime.AddHours(23).AddMinutes(59)).Content.ToString();
+                       
+                        
+                        jsonResponse = GetLogsBySubjectFailed(searchValue, startTime, endTime.AddHours(23).AddMinutes(59), _authConfiguration).Content.ToString();
                         if (!string.IsNullOrEmpty(jsonResponse))
                         {
                             using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(jsonResponse)))
@@ -72,7 +82,7 @@ namespace JLGApps.Lightico.Controllers
                     else if (emailStatusType == "Delivered")
                     {
 
-                        jsonResponse = GetLogsBySubjectDelivered(searchValue, "", startTime, endTime.AddHours(23).AddMinutes(59)).Content.ToString();
+                        jsonResponse = GetLogsBySubjectDelivered(searchValue, "", startTime, endTime.AddHours(23).AddMinutes(59), _authConfiguration).Content.ToString();
 
                         using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(jsonResponse)))
                         {
@@ -88,7 +98,7 @@ namespace JLGApps.Lightico.Controllers
                             {
                                 double lastResponseTimestamp = Convert.ToDouble(startTimeStamp.timestamp);
                                 startTime = UnixTimeConversion(lastResponseTimestamp);
-                                var nextJsonResponse = GetLogsBySubjectDelivered(searchValue, nextPageUrl, startTime, endTime.AddHours(23).AddMinutes(59)).Content.ToString();
+                                var nextJsonResponse = GetLogsBySubjectDelivered(searchValue, nextPageUrl, startTime, endTime.AddHours(23).AddMinutes(59), _authConfiguration).Content.ToString();
 
                                 using (var msNext = new MemoryStream(Encoding.Unicode.GetBytes(nextJsonResponse)))
                                 {
@@ -113,7 +123,7 @@ namespace JLGApps.Lightico.Controllers
                 case "Recipient":
                     if (emailStatusType == "Failed")
                     {
-                        jsonResponse = GetLogsByRecipientFailed(searchValue, startTime, endTime.AddHours(23).AddMinutes(59)).Content.ToString();
+                        jsonResponse = GetLogsByRecipientFailed(searchValue, startTime, endTime.AddHours(23).AddMinutes(59), _authConfiguration).Content.ToString();
                         if (!string.IsNullOrEmpty(jsonResponse))
                         {
                             using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(jsonResponse)))
@@ -126,7 +136,7 @@ namespace JLGApps.Lightico.Controllers
                     }
                     else if (emailStatusType == "Delivered")
                     {
-                        jsonResponse = GetLogsByRecipientDelivered(searchValue, startTime, endTime.AddHours(23).AddMinutes(59)).Content.ToString();
+                        jsonResponse = GetLogsByRecipientDelivered(searchValue, startTime, endTime.AddHours(23).AddMinutes(59), _authConfiguration).Content.ToString();
                         if (!string.IsNullOrEmpty(jsonResponse))
                         {
                             using (var ms = new MemoryStream(Encoding.Unicode.GetBytes(jsonResponse)))
@@ -167,12 +177,12 @@ namespace JLGApps.Lightico.Controllers
         }
 
        
-        public static IRestResponse GetLogsBySubjectFailed(string emailSubject,DateTime startDate,DateTime stopDate)
+        public  IRestResponse GetLogsBySubjectFailed(string emailSubject,DateTime startDate,DateTime stopDate, AuthenticationModel auth)
         {
 
             RestClient client = new RestClient();
             client.BaseUrl = new Uri("https://api.mailgun.net/v3");
-            client.Authenticator = new HttpBasicAuthenticator("api", "key-4a19e783bf5912dfe99c3dd97744b882");
+            client.Authenticator = new HttpBasicAuthenticator(auth.MAILGUN_USERNAME, auth.MAILGUN_KEY);
             RestRequest request = new RestRequest();
             request.AddParameter("domain", "johnsonlawgroup.com", ParameterType.UrlSegment);
             request.Resource = "{domain}/events";
@@ -188,7 +198,7 @@ namespace JLGApps.Lightico.Controllers
             return client.Execute(request);
         }
 
-        public static IRestResponse GetLogsBySubjectDelivered(string emailSubject,string pagingSignature, DateTime startDate, DateTime stopDate)
+        public static IRestResponse GetLogsBySubjectDelivered(string emailSubject,string pagingSignature, DateTime startDate, DateTime stopDate, AuthenticationModel auth)
         {
 
             RestClient client = new RestClient();
@@ -213,7 +223,7 @@ namespace JLGApps.Lightico.Controllers
 
             return client.Execute(request);
         }
-        public static IRestResponse GetLogsByRecipientFailed(string recipient, DateTime startDate, DateTime stopDate)
+        public static IRestResponse GetLogsByRecipientFailed(string recipient, DateTime startDate, DateTime stopDate, AuthenticationModel auth)
         {
 
             RestClient client = new RestClient();
@@ -235,7 +245,7 @@ namespace JLGApps.Lightico.Controllers
             return client.Execute(request);
         }
 
-        public static IRestResponse GetLogsByRecipientDelivered(string recipient, DateTime startDate, DateTime stopDate)
+        public static IRestResponse GetLogsByRecipientDelivered(string recipient, DateTime startDate, DateTime stopDate, AuthenticationModel auth)
         {
 
             RestClient client = new RestClient();
