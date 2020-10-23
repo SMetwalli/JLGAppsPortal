@@ -1,6 +1,6 @@
 using System;
 
-namespace JLGProcessPortal.Models
+namespace JLGApps.SignNow.Models
 {
     public class ErrorViewModel
     {

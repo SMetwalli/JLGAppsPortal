@@ -4,15 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Json;
 using System.Text;
-using JLGProcessPortal.Models;
-using JLGProcessPortal.Models.EmailLogs;
-using JLGProcessPortal.ViewModels;
+using JLGApps.SignNow.Models;
+using JLGApps.SignNow.Models.EmailLogs;
+using JLGApps.SignNow.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using RestSharp;
 using RestSharp.Authenticators;
 
-namespace JLGProcessPortal.Controllers
+namespace JLGApps.SignNow.Controllers
 {
     public class LogsController : Controller
     {

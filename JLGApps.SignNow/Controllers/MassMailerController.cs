@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using JLGProcessPortal.Models;
-using JLGProcessPortal.Controllers.ExcelSheet.Emailer;
-using JLGMassEmailer.Controllers.MessagingService;
 using System.IO;
 using Microsoft.AspNetCore.Http;
-using JLGProcessPortal.ViewModels;
 using Microsoft.AspNetCore.Routing;
 using System.Text.Json;
 using ClosedXML.Excel;
-using JLGProcessPortal.Models.SignNow;
 using Microsoft.Extensions.Options;
 using System.Text;
-using JLGProcessPortal.Controllers.ApiCalls;
+using JLGApps.SignNow.Controllers.ApiCalls;
+using JLGApps.SignNow.Models;
+using JLGApps.SignNow.ViewModels;
+using JLGApps.SignNow.Models.SignNow;
+using JLGApps.SignNow.Controllers.MessagingService;
+using JLGApps.SignNow.Controllers.ExcelSheet.Emailer;
 
-namespace JLGProcessPortal.Controllers
+namespace JLGApps.SignNow.Controllers
 {
 
     public class MassMailerController : Controller

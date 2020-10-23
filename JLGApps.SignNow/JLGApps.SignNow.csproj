@@ -7,9 +7,13 @@
 
   <ItemGroup>
     <Compile Remove="Controllers\Vendors\**" />
+    <Compile Remove="Views\Home\**" />
     <Content Remove="Controllers\Vendors\**" />
+    <Content Remove="Views\Home\**" />
     <EmbeddedResource Remove="Controllers\Vendors\**" />
+    <EmbeddedResource Remove="Views\Home\**" />
     <None Remove="Controllers\Vendors\**" />
+    <None Remove="Views\Home\**" />
   </ItemGroup>
 
   <ItemGroup>

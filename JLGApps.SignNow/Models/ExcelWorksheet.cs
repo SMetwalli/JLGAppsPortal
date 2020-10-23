@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace JLGProcessPortal.Models
+namespace JLGApps.SignNow.Models
 {
     public class ExcelWorksheet
     {

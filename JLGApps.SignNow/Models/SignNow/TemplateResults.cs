@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JLGProcessPortal.Models.SignNow
+namespace JLGApps.SignNow.Models.SignNow
 {
     public class TemplateResults
     {

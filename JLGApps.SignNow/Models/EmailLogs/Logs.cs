@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JLGProcessPortal.Models.EmailLogs
+namespace JLGApps.SignNow.Models.EmailLogs
 {
     public class Logs
     {

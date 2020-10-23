@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace JLGProcessPortal.Models
+namespace JLGApps.SignNow.Models
 {
     public class EmailParameters
     {

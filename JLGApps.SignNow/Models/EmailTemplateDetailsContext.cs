@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace JLGProcessPortal.Models
+namespace JLGApps.SignNow.Models
 {
     public class EmailTemplateDetailsContext:DbContext
     {

@@ -1,13 +1,13 @@
-﻿using JLGProcessPortal.Models;
-using JLGProcessPortal.Models.SignNow;
-using JLGProcessPortal.ViewModels;
+﻿using JLGApps.SignNow.Models;
+using JLGApps.SignNow.Models.SignNow;
+using JLGApps.SignNow.ViewModels;
 using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 
-namespace JLGProcessPortal.Controllers.ApiCalls
+namespace JLGApps.SignNow.Controllers.ApiCalls
 {
     public interface ISignNow
     {
