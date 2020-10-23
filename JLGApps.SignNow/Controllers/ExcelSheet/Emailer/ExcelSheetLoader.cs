@@ -1,12 +1,9 @@
 ﻿using ClosedXML.Excel;
-using JLGProcessPortal.Models;
+using JLGApps.SignNow.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace JLGProcessPortal.Controllers.ExcelSheet.Emailer
+namespace JLGApps.SignNow.Controllers.ExcelSheet.Emailer
 {
     public class ExcelSheetLoader
     {

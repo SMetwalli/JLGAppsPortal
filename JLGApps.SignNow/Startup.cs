@@ -1,5 +1,5 @@
-using JLGProcessPortal.Models;
-using JLGProcessPortal.Models.SignNow;
+using JLGApps.SignNow.Models;
+using JLGApps.SignNow.Models.SignNow;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
 
-namespace JLGProcessPortal
+namespace JLGApps.SignNow
 {
     public class Startup
     {

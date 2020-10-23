@@ -1,13 +1,9 @@
-﻿using JLGProcessPortal.Models;
-using JLGProcessPortal.Models.SignNow;
+﻿using JLGApps.SignNow.Models;
 using RestSharp;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 
-namespace JLGProcessPortal.Controllers.ApiCalls
+namespace JLGApps.SignNow.Controllers.ApiCalls
 {
     public class Authentication
     {

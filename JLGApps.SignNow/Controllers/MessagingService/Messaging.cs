@@ -1,14 +1,12 @@
-﻿using JLGProcessPortal.Models;
+﻿using JLGApps.SignNow.Models;
 using RestSharp;
 using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 
-namespace JLGMassEmailer.Controllers.MessagingService
+namespace JLGApps.SignNow.Controllers.MessagingService
 {
     public interface IMessaging
     {

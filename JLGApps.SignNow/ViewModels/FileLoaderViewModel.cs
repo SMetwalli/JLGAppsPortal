@@ -1,8 +1,8 @@
-﻿using JLGProcessPortal.Models;
-using JLGProcessPortal.Models.SignNow;
+﻿using JLGApps.SignNow.Models;
+using JLGApps.SignNow.Models.SignNow;
 using System.Collections.Generic;
 
-namespace JLGProcessPortal.ViewModels
+namespace JLGApps.SignNow.ViewModels
 {
     public class FileLoaderViewModel
     {
