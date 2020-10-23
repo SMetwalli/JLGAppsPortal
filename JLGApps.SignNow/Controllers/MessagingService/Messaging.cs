@@ -47,8 +47,8 @@ namespace JLGApps.SignNow.Controllers.MessagingService
         {
             string body =  smsParameters["SMS_BODY"].ToString();
             string phoneNumber = smsParameters["SMS_RECIPIENT"].ToString();
-             string accountSid = _authConfiguration.TWILIO_ID;
-             string authToken = _authConfiguration.TWILIO_TOKEN;
+            var accountSid = Environment.GetEnvironmentVariable("TWILIO_ACCOUNT_SID");
+            var authToken = Environment.GetEnvironmentVariable("TWILIO_AUTH_TOKEN");
 
             TwilioClient.Init(accountSid, authToken);
 
