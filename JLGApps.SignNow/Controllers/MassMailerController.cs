@@ -23,9 +23,11 @@ namespace JLGApps.SignNow.Controllers
     public class MassMailerController : Controller
     {
         private AuthenticationModel _authConfiguration;
-        public MassMailerController(IOptions<AuthenticationModel> authConfiguration)
+        private readonly EmailTemplateDetailsContext _context;
+        public MassMailerController(IOptions<AuthenticationModel> authConfiguration, EmailTemplateDetailsContext context)
         {
             _authConfiguration = authConfiguration.Value;
+            _context = context; ;
         }
 
         [Route("")]
@@ -48,7 +50,7 @@ namespace JLGApps.SignNow.Controllers
                 FileAndPath = " ",
                 SMSRecipient=" ",
                 SMSBody= " ",
-                EmailBody = "",
+                EmailBody = "<p><br></p>",
                 EmailSubject = "",
                 EmailSender = "",
                 EmailRecipient = "",
@@ -133,6 +135,8 @@ namespace JLGApps.SignNow.Controllers
 
             return View(envelope);
         }
+
+       
 
         [HttpPost]
         [Route("MassMailer/SelectedTemplateFolder/{xslxFile?}")]
