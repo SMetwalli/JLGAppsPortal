@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,6 +17,8 @@ using JLGApps.SignNow.ViewModels;
 using JLGApps.SignNow.Models.SignNow;
 using JLGApps.SignNow.Controllers.MessagingService;
 using JLGApps.SignNow.Controllers.ExcelSheet.Emailer;
+using System.Web;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace JLGApps.SignNow.Controllers
 {
@@ -23,9 +26,11 @@ namespace JLGApps.SignNow.Controllers
     public class MassMailerController : Controller
     {
         private AuthenticationModel _authConfiguration;
-        public MassMailerController(IOptions<AuthenticationModel> authConfiguration)
+        private readonly EmailTemplateDetailsContext _context;
+        public MassMailerController(IOptions<AuthenticationModel> authConfiguration, EmailTemplateDetailsContext context)
         {
             _authConfiguration = authConfiguration.Value;
+            _context = context; ;
         }
 
         [Route("")]
@@ -48,7 +53,7 @@ namespace JLGApps.SignNow.Controllers
                 FileAndPath = " ",
                 SMSRecipient=" ",
                 SMSBody= " ",
-                EmailBody = "",
+                EmailBody = "<p><br></p>",
                 EmailSubject = "",
                 EmailSender = "",
                 EmailRecipient = "",
@@ -134,6 +139,8 @@ namespace JLGApps.SignNow.Controllers
             return View(envelope);
         }
 
+       
+
         [HttpPost]
         [Route("MassMailer/SelectedTemplateFolder/{xslxFile?}")]
         public ActionResult SelectedTemplateFolder(string xslxFile, string emailBody, string emailSubject, string emailSender, string emailRecipientAddress, string txtMessage,
@@ -185,58 +192,44 @@ namespace JLGApps.SignNow.Controllers
         }
 
 
-
-        [HttpPost]        
+        [HttpPost]  
         [Route("MassMailer/LoadData/{xslxFile?}")]
-        public ActionResult LoadData(IFormFile xslxFile,string emailBody, string emailSubject, string emailSender, string emailRecipient,string txtMessage,string txtRecipient,string folderId,string selectedFolder,string casenumberExcelHeader)
+        public ActionResult LoadDataAsync()
         {
-            string excelFile = " ";
-            string body = " ";
-            string subject = " ";
-            string sender = " ";
-            string recipient = " ";
-            string messageAlert = " ";
-            string smsMessage = " ";
-            string smsRecipient = " ";
-
-            //string path = @"\\jlgfs01\Mail\Bulk Mailer";
-
             string path = @"C:\Bulk Mailer";
-            if (!string.IsNullOrEmpty(emailRecipient))
-                recipient = emailRecipient;
-
-
-            if (!string.IsNullOrEmpty(emailBody) && emailBody != "<p><br></p>")
-            { body = emailBody.Trim(); }
-            else
-            { messageAlert = ""; }
-
-            if (!string.IsNullOrEmpty(emailSubject))
-                subject = emailSubject.Trim();
-            if (!string.IsNullOrEmpty(emailSender))
-                sender = emailSender.Trim();
-           
-            if (!string.IsNullOrEmpty(txtMessage))
-                smsMessage = txtMessage.Trim();
-            if (!string.IsNullOrEmpty(txtRecipient))
-                smsRecipient = txtRecipient.Trim();
-
-
-            if (xslxFile != null)
+            string excelFile = " ";
+            string actualFileName, messageAlert;
+          
+        
+            if (Request.Form.Files != null)
             {
+                var file = Request.Form.Files[0];
+                actualFileName = file.FileName;
+              
+
                 try
                 {
-                    using (var fileStream = new FileStream(Path.Combine(path, xslxFile.FileName), FileMode.Create))
+                    using (var fileStream = new FileStream(Path.Combine(path, actualFileName), FileMode.Create))
                     {
                         if (Directory.Exists(path) == true)
-                            xslxFile.CopyTo(fileStream);
+                            file.CopyTo(fileStream);
                     }
-                    excelFile = Path.Combine(path, xslxFile.FileName);
-                 
-                }catch(Exception ex)
+                    excelFile = Path.Combine(path, file.FileName);
+                    var envelope = new FileLoaderViewModel();
+                    var RecipientLoader = new ExcelSheetLoader();
+                    var excelRecipients = RecipientLoader.LoadWorkSheet(excelFile);
+
+                    if (excelRecipients != null)
+                    {
+                        envelope.Recipients = excelRecipients;
+                        return Json(new { recipients = envelope.Recipients });
+                    }
+
+                }
+                catch (Exception ex)
                 {
-                  
-                    if(ex.HResult== -2147024864)
+
+                    if (ex.HResult == -2147024864)
                         messageAlert = "This excel worksheet cannot be loaded because it is already open and running.\n\r " +
                             "More than one of the same excel worksheet cannot be running at the same time.\n\r  " +
                             "Please close and shut down its process.";
@@ -244,15 +237,76 @@ namespace JLGApps.SignNow.Controllers
                     messageAlert = ex.ToString();
                 }
             }
+          
+            return Content("Success");
+        }
+       //[HttpPost]        
+       // [Route("MassMailer/LoadData/{xslxFile?}")]
+       // public ActionResult LoadData(IFormFile xslxFile,string emailBody, string emailSubject, string emailSender, string emailRecipient,string txtMessage,string txtRecipient,string folderId,string selectedFolder,string casenumberExcelHeader)
+       // {
+       //     string excelFile = " ";
+       //     string body = " ";
+       //     string subject = " ";
+       //     string sender = " ";
+       //     string recipient = " ";
+       //     string messageAlert = " ";
+       //     string smsMessage = " ";
+       //     string smsRecipient = " ";
+
+       //     //string path = @"\\jlgfs01\Mail\Bulk Mailer";
+
+       //     string path = @"C:\Bulk Mailer";
+       //     if (!string.IsNullOrEmpty(emailRecipient))
+       //         recipient = emailRecipient;
+
+
+       //     if (!string.IsNullOrEmpty(emailBody) && emailBody != "<p><br></p>")
+       //     { body = emailBody.Trim(); }
+       //     else
+       //     { messageAlert = ""; }
+
+       //     if (!string.IsNullOrEmpty(emailSubject))
+       //         subject = emailSubject.Trim();
+       //     if (!string.IsNullOrEmpty(emailSender))
+       //         sender = emailSender.Trim();
+           
+       //     if (!string.IsNullOrEmpty(txtMessage))
+       //         smsMessage = txtMessage.Trim();
+       //     if (!string.IsNullOrEmpty(txtRecipient))
+       //         smsRecipient = txtRecipient.Trim();
+
+
+       //     if (xslxFile != null)
+       //     {
+       //         try
+       //         {
+       //             using (var fileStream = new FileStream(Path.Combine(path, xslxFile.FileName), FileMode.Create))
+       //             {
+       //                 if (Directory.Exists(path) == true)
+       //                     xslxFile.CopyTo(fileStream);
+       //             }
+       //             excelFile = Path.Combine(path, xslxFile.FileName);
+                 
+       //         }catch(Exception ex)
+       //         {
+                  
+       //             if(ex.HResult== -2147024864)
+       //                 messageAlert = "This excel worksheet cannot be loaded because it is already open and running.\n\r " +
+       //                     "More than one of the same excel worksheet cannot be running at the same time.\n\r  " +
+       //                     "Please close and shut down its process.";
+
+       //             messageAlert = ex.ToString();
+       //         }
+       //     }
            
 
-            if (excelFile == " " && TempData["EXCEL_FILE"] != null)
-                excelFile = TempData["EXCEL_FILE"].ToString();
+       //     if (excelFile == " " && TempData["EXCEL_FILE"] != null)
+       //         excelFile = TempData["EXCEL_FILE"].ToString();
 
-            return RedirectToAction("Index", new { excelFile = excelFile, emailBody = body, emailSubject = subject, emailSender = sender, emailRecipient = recipient, messageAlert=messageAlert,
-                                                    templateID=" " ,txtMessage= smsMessage,txtRecipient= smsRecipient, selectedFolder= selectedFolder,folderId= folderId,casenumberExcelHeader=casenumberExcelHeader
-            });
-        }
+       //     return RedirectToAction("Index", new { excelFile = excelFile, emailBody = body, emailSubject = subject, emailSender = sender, emailRecipient = recipient, messageAlert=messageAlert,
+       //                                             templateID=" " ,txtMessage= smsMessage,txtRecipient= smsRecipient, selectedFolder= selectedFolder,folderId= folderId,casenumberExcelHeader=casenumberExcelHeader
+       //     });
+       // }
 
         
         [HttpPost]      
