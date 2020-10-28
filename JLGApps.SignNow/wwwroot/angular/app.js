@@ -1,6 +1,6 @@
-﻿var myApp = angular.module('templateDatagrid', ['summernote', 'ui.bootstrap'])
+﻿var jlgMailerApp = angular.module('templateDatagrid', ['summernote', 'ui.bootstrap'])
 
-myApp.directive('fileModel', ['$parse', function ($parse) {
+jlgMailerApp.directive('fileModel', ['$parse', function ($parse) {
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
@@ -17,7 +17,7 @@ myApp.directive('fileModel', ['$parse', function ($parse) {
 }]);
 
 
-myApp.controller('templateController', ['$scope', '$http',  function ($scope, $http) {
+jlgMailerApp.controller('templateController', ['$scope', '$http',  function ($scope, $http) {
 
     $scope.mailboxes = ["earplug_updates@johnsonlawgroup.com", "essure_updates@johnsonlawgroup.com", "ethicontvt@johnsonlawgroup.com", "hips_updates@johnsonlawgroup.com", "herniamesh@johnsonlawgroup.com", "rsp_updates@johnsonlawgroup.com", "rup_updates@johnsonlawgroup.com", "talc_updates@johnsonlawgroup.com", "tdf_updates@johnsonlawgroup.com", "tvm_updates@johnsonlawgroup.com", "txt_updates@johnsonlawgroup.com", "xar_updates@johnsonlawgroup.com", "zan_updates@johnsonlawgroup.com"];
     $scope.selectedMailbox = "earplug_updates@johnsonlawgroup.com";
@@ -147,7 +147,7 @@ myApp.controller('templateController', ['$scope', '$http',  function ($scope, $h
         $scope.pageChanged = function () {
             console.log('Page changed to: ' + $scope.currentPage);
     };
-        //https://needlesapps.johnsonlawgroup.com/tools
+     
     $scope.uploadFile = function () {
      
 
@@ -190,9 +190,5 @@ myApp.controller('templateController', ['$scope', '$http',  function ($scope, $h
         }
     }
 
-    $scope.submit = function () {
-        if ($scope.form.file.$valid && $scope.file) {
-            $scope.upload($scope.file);
-        }
-    };
+
 }]);
