@@ -125,9 +125,6 @@ jlgMailerApp.controller('templateController', ['$scope', '$http',  function ($sc
                     document.getElementById("pageCount").nodeValue = $scope.viewby;
                     document.getElementById("alertNewTemplate").style.display = 'block';
                 })
-
-           
-
         });
 
 
@@ -169,6 +166,8 @@ jlgMailerApp.controller('templateController', ['$scope', '$http',  function ($sc
             $scope.RecipientPages=5
             //$scope.maxSize = 5;
             document.getElementById("pageCountRecipientList").nodeValue = $scope.viewByRecipient;
+            document.getElementById("fileAndPath").nodeValue = file.name;
+            $scope.excelFile = file.name;
 
         });
     };

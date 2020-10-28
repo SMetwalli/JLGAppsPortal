@@ -277,7 +277,7 @@
 
                                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
                                                                     <a class="dropdown-item" href="javascript:void(0);" ng-click="update(row)">Update Template</a>
-                                                                    <a class="dropdown-item" href="javascript:void(0);" ng-click="templateLoader(row)" onclick="loader1()">Load Template</a>
+                                                                    <a class="dropdown-item" href="javascript:void(0);" ng-click="templateLoader(row)">Load Template</a>
                                                                     <a class="dropdown-item" href="javascript:void(0);" ng-click="delete(row)">Delete Template</a>
                                                                 </div>
                                                             </div>
@@ -384,10 +384,11 @@
                                                         <label for="xlsxFile">Excel File Upload (.xlsx)</label>
 
                                                         <div class="custom-file">
-                                                            @*<input type="file" id="btnUploadedFile" class="custom-file-input" name="file" accept=".xlsx" ngf-select ng-model="file" value="Import Excel Sheet">*@
-                                                            <input type="file" id="btnUploadedFile" class="custom-file-input"  accept=".xlsx" file-model="myFile" value="Import Excel Sheet">
+
+                                                            <input type="file" id="btnUploadedFile" class="custom-file-input" accept=".xlsx" file-model="myFile" value="Import Excel Sheet">
                                                             <label id="fileName" class="custom-file-label" for="btnUploadedFile">Choose a excel file</label>
                                                             <input id="btnExcelFileUpload" type="submit" ng-click="uploadFile()" value="Import Excel Sheet" class="mt-4 mb-4 btn btn-primary">
+                                                            <label id="fileAndPath">{{excelFile}}</label>
                                                         </div>
                                                         @{
                                                             @if (Model != null)
@@ -886,58 +887,7 @@
     </script>
 
 
-    <script>
-        $("#btnExcelFileUpload").click(function () {
-
-            var editorContent = $('#summernote').summernote('code');
-            document.getElementById('upload_EmailBodyText').value = editorContent;
-            var subject = $('#subject').val();
-            var sender = $('#from').val();
-            var recipient = $('#recipientEmail').val();
-            var smsBody = $('#smsBody').val();
-            var smsRecipient = $('#smsRecipient').val();
-
-            var templateFolder = document.getElementById("selectedTemplateFolder");
-            var folderId = templateFolder.options[templateFolder.selectedIndex].value;
-            var selectedTemplateFolder = templateFolder.options[templateFolder.selectedIndex].text;
-
-            var casenum = document.getElementById("casenumMergeHeader");
-            var caseNumber = casenum.options[casenum.selectedIndex].text;
-
-            document.getElementById('upload_EmailSubject').value = subject;
-            document.getElementById('upload_EmailSender').value = sender;
-            document.getElementById('upload_EmailRecipient').value = recipient;
-
-            document.getElementById('upload_SMSBody').value = smsBody;
-            document.getElementById('upload_SMSRecipient').value = smsRecipient;
-
-            document.getElementById('upload_TemplateFolderId').value = folderId;
-            document.getElementById('upload_TemplateFolder').value = selectedTemplateFolder;
-            document.getElementById('upload_FolderCasenumber').value = caseNumber;
-
-            //document.getElementById('btnExcelFileUpload').style.display = 'none';
-        });
-
-
-
-
-        $('#btnUploadedFile').click(function () {
-
-            const fileBtn = document.getElementById('btnUploadedFile');
-            const fileLbl = document.getElementById('fileName');
-
-            fileBtn.addEventListener("change", function () {
-                if (fileBtn.value) {
-                    fileLbl.innerHTML = fileBtn.value.match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
-                } else {
-                    fileLbl.innerHTML = "Choose a file";
-                }
-            });
-
-        });
-
-
-    </script>
+   
 
 
     <script>
