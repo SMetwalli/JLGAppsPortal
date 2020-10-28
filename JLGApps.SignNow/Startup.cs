@@ -2,12 +2,16 @@ using JLGApps.SignNow.Models;
 using JLGApps.SignNow.Models.SignNow;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json.Serialization;
+using System.IO;
 
 namespace JLGApps.SignNow
 {
@@ -31,8 +35,12 @@ namespace JLGApps.SignNow
             services.AddControllers().AddNewtonsoftJson(options =>{options.SerializerSettings.ContractResolver = new DefaultContractResolver();});
             services.AddDbContext<EmailTemplateDetailsContext>(options => options.UseSqlServer(Configuration.GetConnectionString("jlgAppConnection")));
             services.Configure<AuthenticationModel>(Configuration.GetSection("AUTH_SETTINGS"));
-           
 
+            services.Configure<FormOptions>(o => {
+                o.ValueLengthLimit = int.MaxValue;
+                o.MultipartBodyLengthLimit = int.MaxValue;
+                o.MemoryBufferThreshold = int.MaxValue;
+            });
 
 
             services.AddSession();
@@ -54,8 +62,10 @@ namespace JLGApps.SignNow
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+           
+            app.UseCors("CorsPolicy");
             app.UseStaticFiles();
-
+         
             app.UseRouting();
 
             app.UseAuthorization();

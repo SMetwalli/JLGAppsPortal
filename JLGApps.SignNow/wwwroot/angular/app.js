@@ -1,13 +1,36 @@
-﻿angular.module('templateDatagrid', ['summernote', 'ui.bootstrap'])
+﻿var myApp = angular.module('templateDatagrid', ['summernote', 'ui.bootstrap'])
 
-    .controller('templateController', ['$scope', '$http', function ($scope, $http) {
-       
-        $http({
-            method: 'GET',
-            url: '/api/EmailTemplateDetails'
+myApp.directive('fileModel', ['$parse', function ($parse) {
+    return {
+        restrict: 'A',
+        link: function (scope, element, attrs) {
+            var model = $parse(attrs.fileModel);
+            var modelSetter = model.assign;
 
-        }).then(function success(response) {
+            element.bind('change', function () {
+                scope.$apply(function () {
+                    modelSetter(scope, element[0].files[0]);
+                });
+            });
+        }
+    };
+}]);
 
+
+myApp.controller('templateController', ['$scope', '$http',  function ($scope, $http) {
+
+    $scope.mailboxes = ["earplug_updates@johnsonlawgroup.com", "essure_updates@johnsonlawgroup.com", "ethicontvt@johnsonlawgroup.com", "hips_updates@johnsonlawgroup.com", "herniamesh@johnsonlawgroup.com", "rsp_updates@johnsonlawgroup.com", "rup_updates@johnsonlawgroup.com", "talc_updates@johnsonlawgroup.com", "tdf_updates@johnsonlawgroup.com", "tvm_updates@johnsonlawgroup.com", "txt_updates@johnsonlawgroup.com", "xar_updates@johnsonlawgroup.com", "zan_updates@johnsonlawgroup.com"];
+    $scope.selectedMailbox = "earplug_updates@johnsonlawgroup.com";
+
+
+    sender = document.getElementById('selected_EmailSender').value
+
+
+    if (sender != "")
+        $scope.selectedMailbox = sender;
+
+   
+        $http.get('api/EmailTemplateDetails').then(function (response) {
             $scope.rows = response.data;
             $scope.viewby = 5;
             $scope.totalItems = response.data.length;
@@ -15,24 +38,21 @@
             $scope.itemsPerPage = $scope.viewby;
             $scope.maxSize = 5;
             document.getElementById("pageCount").nodeValue = $scope.viewby;
+
         }, function error(response) {
+          
+                alert('error');
+
         });
- 
+      
 
     $scope.delete = function (row) {
-        var Id = row.TemplateId;       
-        $http.delete(' api/EmailTemplateDetails/' + Id).then(function success(response) {
+        var templateId = row.TemplateId;       
+        $http.delete('api/EmailTemplateDetails/' + templateId).then(function success(response) {
 
-            $http({
+            $http.get('api/EmailTemplateDetails').then(function (response) {
 
-                method: 'GET',
-
-                url: '/api/EmailTemplateDetails'
-
-
-            }).then(function success(response) {
-
-                // this function will be called when the request is success
+             
       
                 $scope.rows = response.data;
                 $scope.viewby = 5;
@@ -47,14 +67,7 @@
                         backgroundColor: '#e7515a'
                     });
                
-            }, function error(response) {
-
-                // this function will be called when the request returned error status
             });
-
-        }, function error(response) {
-
-            // this function handles error
 
         });
     }
@@ -63,26 +76,20 @@
         $scope.templateLoader = function (row) {
 
             var templateId = row.TemplateId;
-
-            $http({
-
-                method: 'GET',
-
-                url: '/api/EmailTemplateDetails/' + templateId
-
-
-            }).then(function success(response) {
-                $('#summernote').summernote('reset');
-         
-                $('#summernote').summernote('pasteHTML', response.data.EmailBody);
-                document.getElementById('subject').value = response.data.EmailSubject;
-                document.getElementById('from').value = response.data.EmailSender;
+            $http.get('api/EmailTemplateDetails/' + templateId).then(function (response) {
+             
+                document.getElementById('subject').value = response.data.EmailSubject;               
                 document.getElementById('recipientEmail').value = response.data.EmailRecipient;
-            
-            }, function error(response) {
+                $('#summernote').summernote('reset');
+                $('#summernote').summernote('pasteHTML', response.data.EmailBody);
 
-
-            });
+                var sender = response.data.EmailSender.trim()
+               
+                $scope.selectedMailbox = sender;
+              
+            })
+          
+           
 
         }
 
@@ -106,29 +113,20 @@
         template.SMSBody = smsBody;
         template.SMSRecipient = smsRecipient;
 
-        $http.post('/api/EmailTemplateDetails/', template).then(function (response) {
+            $http.post('api/EmailTemplateDetails/' , template).then(function (response) {
             $scope.rows = response.data;         
-          
 
-            $http({
-                method: 'GET',
-                url: '/api/EmailTemplateDetails'
-            }).then(function success(response) {
-                $scope.rows = response.data;
-                $scope.viewby = 5;
-                $scope.totalItems = response.data.length;               
-                $scope.itemsPerPage = $scope.viewby;
-                $scope.maxSize = 5;
-                document.getElementById("pageCount").nodeValue = $scope.viewby;
-                document.getElementById("alertNewTemplate").style.display = 'block';
-            }, function error(response) {
+             $http.get('api/EmailTemplateDetails').then(function (response) {
+                    $scope.rows = response.data;
+                    $scope.viewby = 5;
+                    $scope.totalItems = response.data.length;
+                    $scope.itemsPerPage = $scope.viewby;
+                    $scope.maxSize = 5;
+                    document.getElementById("pageCount").nodeValue = $scope.viewby;
+                    document.getElementById("alertNewTemplate").style.display = 'block';
+                })
 
-
-            });
-
-        }, function (response) {
-
-            // this function handles error
+           
 
         });
 
@@ -148,5 +146,53 @@
 
         $scope.pageChanged = function () {
             console.log('Page changed to: ' + $scope.currentPage);
-        };
+    };
+        //https://needlesapps.johnsonlawgroup.com/tools
+    $scope.uploadFile = function () {
+     
+
+        var file = $scope.myFile;
+        var uploadUrl = "MassMailer/LoadData/";
+      
+        var fd = new FormData();
+        fd.append('file', file);
+        $http.post(uploadUrl, fd, {
+            transformRequest: angular.identity,
+            headers: { 'Content-Type': undefined }
+        }).then(function (response) {
+          
+            $scope.recipientListRows = response.data.recipients;
+            $scope.recpientViewBy = 10;
+            $scope.recipientTotalItems = response.data.recipients.length;
+            $scope.recipientCurrentPage = 1;
+            $scope.recipientItemsPerPage = $scope.recpientViewBy;
+            $scope.RecipientPages=5
+            //$scope.maxSize = 5;
+            document.getElementById("pageCountRecipientList").nodeValue = $scope.viewByRecipient;
+
+        });
+    };
+
+
+
+
+
+
+
+
+
+    $scope.recipientSetItemsPerPage = function (num) {
+        if (num != 'All') {
+            $scope.recipientItemsPerPage = num;
+            $scope.recipientCurrentPage = 1; //reset to first page
+        } else {
+            $scope.recipientItemsPerPage=999999
+        }
+    }
+
+    $scope.submit = function () {
+        if ($scope.form.file.$valid && $scope.file) {
+            $scope.upload($scope.file);
+        }
+    };
 }]);

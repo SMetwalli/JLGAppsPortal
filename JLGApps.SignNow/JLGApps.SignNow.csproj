@@ -17,8 +17,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Controllers\FileProcessingController.cs" />
     <Compile Remove="Controllers\HomeController.cs" />
+    <Compile Remove="Controllers\RecipientExcelListController.cs" />
     <Compile Remove="Controllers\SignNowApiCalls\DocumentProcessor.cs" />
+    <Compile Remove="Controllers\ValuesController.cs" />
   </ItemGroup>
 
   <ItemGroup>
