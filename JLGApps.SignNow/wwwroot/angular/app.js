@@ -1,6 +1,6 @@
-﻿var myApp = angular.module('templateDatagrid', ['summernote', 'ui.bootstrap'])
+﻿var jlgMailerApp = angular.module('templateDatagrid', ['summernote', 'ui.bootstrap'])
 
-myApp.directive('fileModel', ['$parse', function ($parse) {
+jlgMailerApp.directive('fileModel', ['$parse', function ($parse) {
     return {
         restrict: 'A',
         link: function (scope, element, attrs) {
@@ -17,7 +17,11 @@ myApp.directive('fileModel', ['$parse', function ($parse) {
 }]);
 
 
+
 myApp.controller('templateController', ['$scope', '$http', function ($scope, $http) {
+
+jlgMailerApp.controller('templateController', ['$scope', '$http',  function ($scope, $http) {
+
 
     $scope.mailboxes = ["earplug_updates@johnsonlawgroup.com", "essure_updates@johnsonlawgroup.com", "ethicontvt@johnsonlawgroup.com", "hips_updates@johnsonlawgroup.com", "herniamesh@johnsonlawgroup.com", "rsp_updates@johnsonlawgroup.com", "rup_updates@johnsonlawgroup.com", "talc_updates@johnsonlawgroup.com", "tdf_updates@johnsonlawgroup.com", "tvm_updates@johnsonlawgroup.com", "txt_updates@johnsonlawgroup.com", "xar_updates@johnsonlawgroup.com", "zan_updates@johnsonlawgroup.com"];
     $scope.selectedMailbox = "earplug_updates@johnsonlawgroup.com";
@@ -28,6 +32,7 @@ myApp.controller('templateController', ['$scope', '$http', function ($scope, $ht
 
     if (sender != "")
         $scope.selectedMailbox = sender;
+
 
 
     $http.get('api/EmailTemplateDetails').then(function (response) {
@@ -45,6 +50,16 @@ myApp.controller('templateController', ['$scope', '$http', function ($scope, $ht
 
     });
 
+        }, function error(response) {
+          
+                alert('Error');
+
+        });
+      
+    $http.get('MassMailer/GetFolderTemplatesList/').then(function (response) {
+
+        $scope.FoldersTemplates = response.data.folders;
+    });
 
     $scope.delete = function (row) {
         var templateId = row.TemplateId;
@@ -155,7 +170,70 @@ myApp.controller('templateController', ['$scope', '$http', function ($scope, $ht
         });
     }
 
+        $scope.templateLoader = function (row) {
 
+            var templateId = row.TemplateId;
+            $http.get('api/EmailTemplateDetails/' + templateId).then(function (response) {
+             
+                document.getElementById('subject').value = response.data.EmailSubject;               
+                document.getElementById('recipientEmail').value = response.data.EmailRecipient;
+                $('#summernote').summernote('reset');
+                $('#summernote').summernote('pasteHTML', response.data.EmailBody);
+                var sender = response.data.EmailSender.trim()               
+                $scope.selectedMailbox = sender;
+              
+            })
+          
+        }
+
+
+    $scope.loadVendorTemplates = function () {
+
+     
+        var folderId = $scope.selectedFolder.id;
+        var folderName = $scope.selectedFolder.team_name
+
+        var templateParameters = { 'FolderId': folderId, 'FolderName': folderName };
+        $http.post('MassMailer/SelectedTemplateFolder/', templateParameters).then(function (response) {
+            $scope.templateRows = response.data.templates;
+
+        });
+    };
+
+    $scope.createDocument = function (templateRow) {
+
+        var xlsxFileAndPath = $scope.excelFile;
+        templateRow.caseNumber = $scope.casenum;
+        templateRow.templateFolderId=$scope.selectedFolder.id
+        templateRow.excelFilePath = xlsxFileAndPath;
+        startUpdatingDocCreateProgressIndicator();
+        $http.post('MassMailer/SignNowGenerateDocument/', templateRow).then(function (response) {
+
+
+        });
+        var intervalId;
+
+        function startUpdatingDocCreateProgressIndicator() {
+            $("#progress").show();
+
+            intervalId = setInterval(
+                function () {
+                    // We use the POST requests here to avoid caching problems (we could use the GET requests and disable the cache instead)
+                    $.post('MassMailer/Progress',function (progress) {
+
+                            $("#progress").css({ width: progress + "%" });
+                            $("#progress").html(progress + "%");
+                        }
+                    );
+                },
+                10
+            );
+        }
+
+    }
+    function stopUpdatingDocCreateProgressIndicator() {
+        clearInterval(intervalId);
+    }
 
     $scope.add = function (template) {
 
@@ -192,7 +270,20 @@ myApp.controller('templateController', ['$scope', '$http', function ($scope, $ht
             })
 
 
+            template.SMSRecipient = smsRecipient;
+      
+            $http.post('api/EmailTemplateDetails/' , template).then(function (response) {
+            $scope.rows = response.data;         
 
+             $http.get('api/EmailTemplateDetails').then(function (response) {
+                    $scope.rows = response.data;
+                    $scope.viewby = 5;
+                    $scope.totalItems = response.data.length;
+                    $scope.itemsPerPage = $scope.viewby;
+                    $scope.maxSize = 5;
+                    document.getElementById("pageCount").nodeValue = $scope.viewby;
+                    document.getElementById("alertNewTemplate").style.display = 'block';
+                })
         });
 
 
@@ -212,7 +303,7 @@ myApp.controller('templateController', ['$scope', '$http', function ($scope, $ht
     $scope.pageChanged = function () {
         console.log('Page changed to: ' + $scope.currentPage);
     };
-    //https://needlesapps.johnsonlawgroup.com/tools
+
     $scope.uploadFile = function () {
 
 
@@ -227,14 +318,28 @@ myApp.controller('templateController', ['$scope', '$http', function ($scope, $ht
         }).then(function (response) {
 
             $scope.recipientListRows = response.data.recipients;
+
+            $scope.recipientListRows = response.data.values.Recipients;          
+            $scope.excelHeaderListRows = response.data.values.Recipients[0].Columns;
+
             $scope.recpientViewBy = 10;
-            $scope.recipientTotalItems = response.data.recipients.length;
+            $scope.recipientTotalItems = response.data.values.Recipients.length;
             $scope.recipientCurrentPage = 1;
             $scope.recipientItemsPerPage = $scope.recpientViewBy;
             $scope.RecipientPages = 5
             //$scope.maxSize = 5;
             document.getElementById("pageCountRecipientList").nodeValue = $scope.viewByRecipient;
-
+            document.getElementById("fileAndPath").value = response.data.values.FileAndPath;
+           
+            $scope.excelFile = response.data.values.FileAndPath;
+           
+            var excel = response.data.values.Recipients[0];
+            var excelHeader = "";
+            for (col of excel.Columns) {
+                
+                var excelHeader = excelHeader + '[[' + col.Column + ']] ';
+                $scope.excelHeaders = excelHeader.trim();
+            }
         });
     };
 
@@ -242,7 +347,7 @@ myApp.controller('templateController', ['$scope', '$http', function ($scope, $ht
 
 
 
-
+  
 
 
 
@@ -255,9 +360,5 @@ myApp.controller('templateController', ['$scope', '$http', function ($scope, $ht
         }
     }
 
-    $scope.submit = function () {
-        if ($scope.form.file.$valid && $scope.file) {
-            $scope.upload($scope.file);
-        }
-    };
+
 }]);

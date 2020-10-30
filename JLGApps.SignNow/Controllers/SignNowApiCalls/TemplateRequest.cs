@@ -11,7 +11,7 @@ namespace JLGApps.SignNow.Controllers.ApiCalls
 {
     public interface ISignNow
     {
-        List<TemplateInfo> GetTemplates(AuthenticationModel authentication, string folderName, string folderId);
+        List<TemplateInfo> GetTemplates(AuthenticationModel authentication, string folderId, string folderName);
         string GetTemplateInfo(AuthenticationModel authentication, string folderId);
 
         FolderList GetFolders(AuthenticationModel authentication);
@@ -19,7 +19,7 @@ namespace JLGApps.SignNow.Controllers.ApiCalls
 
     public class SignNowTemplateRequest: ISignNow
     {
-        public List<TemplateInfo> GetTemplates(AuthenticationModel authentication,string folderName,string folderId)
+        public List<TemplateInfo> GetTemplates(AuthenticationModel authentication,string folderId,string folderName)
         {
           
                 var templateJson = GetTemplateInfo(authentication, folderId);
@@ -31,9 +31,8 @@ namespace JLGApps.SignNow.Controllers.ApiCalls
           
 
             foreach (var template in templateParameters.documents)
-            {
-                templateData.Add(new TemplateInfo { Name = template.document_name, templateFolderID = template.id, folderId= folderId, folderName= folderName });
-            }
+                templateData.Add(new TemplateInfo {  Name = template.document_name, templateID = template.id, folderId= folderId, folderName=folderName, templateName=template.document_name});
+          
             return templateData;
         }
 

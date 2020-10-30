@@ -8,7 +8,7 @@ namespace JLGApps.SignNow.ViewModels
     public class TemplateInfo
     {
         public string Name { get; set; }
-        public string templateFolderID { get; set; }
+        public string templateID { get; set; }
 
         public string templateName { get; set; }
 
@@ -25,6 +25,13 @@ namespace JLGApps.SignNow.ViewModels
     }
 
 
+    public class TemplateRequestParameters
+    {
+        public string FolderId { get; set; }
+
+       public string FolderName { get; set; }
+        public string casenumber { get; set; }
+    }
    
 
    
