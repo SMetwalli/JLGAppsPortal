@@ -41,7 +41,7 @@ jlgMailerApp.controller('templateController', ['$scope', '$http',  function ($sc
 
         }, function error(response) {
           
-                alert('error');
+                alert('Error');
 
         });
       
@@ -206,7 +206,7 @@ jlgMailerApp.controller('templateController', ['$scope', '$http',  function ($sc
             transformRequest: angular.identity,
             headers: { 'Content-Type': undefined }
         }).then(function (response) {
-          
+           
             $scope.recipientListRows = response.data.values.Recipients;          
             $scope.excelHeaderListRows = response.data.values.Recipients[0].Columns;
             $scope.recpientViewBy = 10;
