@@ -322,7 +322,7 @@
                                                         </button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form id="myModal">
+                                                      
                                                             <div class="form-group">
                                                                 <label for="Template Title">Template Title</label>
                                                                 <input type="text" ng-model="template.TemplateName" class="form-control" aria-describedby="emailHelp" placeholder="Enter document title" required>
@@ -341,9 +341,7 @@
                                                                 </div>
 
                                                             </div>
-
-
-                                                        </form>
+                                                       
                                                         <div id="alertNewTemplate" class="alert alert-icon-left alert-light-success mb-4" role="alert">
                                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" data-dismiss="alert" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x close"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
@@ -357,7 +355,6 @@
                                                         <button type="button" class="btn" data-dismiss="modal">Close</button>
                                                         <button id="save" ng-click="add(template)" type="submit" class="btn btn-primary">Save</button>
                                                     </div>
-
                                                 </div>
                                             </div>
                                         </div>
@@ -377,7 +374,6 @@
                                                     <h3>Recipient List</h3>
                                                 </div>
                                             </div>
-
                                             <div class="row">
                                                 <div class="col-xl-12 col-md-12 col-sm-12 col-12">
                                                     <div class="form-group mb-4 mt-3">
@@ -390,29 +386,10 @@
                                                             <input id="btnExcelFileUpload" type="submit" ng-click="uploadFile()" value="Import Excel Sheet" class="mt-4 mb-4 btn btn-primary">
                                                             <label id="fileAndPath">{{excelFile}}</label>
                                                         </div>
-                                                        @{
-                                                            @if (Model != null)
-                                                            {
-                                                                @if (Model.FileAndPath != null)
-                                                                {
-                                                                    <label id="fileAndPath">@Model.FileAndPath</label>
-                                                                }
-                                                            }
-                                                        }
-                                                        <textarea id="@Html.IdFor(p => p.EmailBody)" name="@Html.IdFor(p => p.EmailBody)" hidden class="emailBodyTextVerbage"></textarea>
-                                                        <input type="hidden" name="emailBody" id="upload_EmailBodyText" />
-                                                        <input type="hidden" name="emailSubject" id="upload_EmailSubject" />
-                                                        <input type="hidden" name="emailSender" id="upload_EmailSender" />
-                                                        <input type="hidden" name="emailRecipient" id="upload_EmailRecipient" />
-                                                        <input type="hidden" name="txtMessage" id="upload_SMSBody" />
-                                                        <input type="hidden" name="txtRecipient" id="upload_SMSRecipient" />
-                                                        <input type="hidden" name="folderId" id="upload_TemplateFolderId" />
-                                                        <input type="hidden" name="selectedFolder" id="upload_TemplateFolder" />
-                                                        <input type="hidden" name="casenumberExcelHeader" id="upload_FolderCasenumber" />
+                                                       
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="widget-content widget-content-area">
                                                 <div class="table-responsive mb-4 style-1">
                                                     <div class="search-input-group-style input-group mb-3">
@@ -463,9 +440,8 @@
                                         </div>
                                     </div>
                                 </div>
-
                                 <div class="widget-content widget-content-area">
-                                    <form method="post" asp-action="SelectedTemplateFolder" asp-controller="MassMailer">
+                                  
                                         <div class="table-responsive">
                                             <table class="table mb-4 contextual-table">
                                                 <thead>
@@ -479,86 +455,28 @@
                                                 </thead>
                                                 <tbody>
                                                     <tr class="table-default">
-                                                        <td>
-                                                            <select size="1" id="selectedTemplateFolder" class="form-control" style="width:250px">
-                                                                <!option>NONE</!option>
-                                                                @if (Model.TemplateFolderList != null)
-                                                                {
-                                                                    @foreach (var folder in Model.TemplateFolderList.folders.Where(cat => cat.name == "Team Templates"))
-                                                                    {
-                                                                        string selectedFolder = "";
-
-
-                                                                        if (Model.SelectedTemplateFolder == folder.team_name)
-                                                                        {
-                                                                            selectedFolder = "Selected";
-
-                                                                        }
-
-                                                                        <!option @selectedFolder value="@folder.id">
-                                                                            @folder.team_name
-                                                                        </!option>
-                                                                    }
-                                                                }
-
+                                                        <td>                                                         
+                                                            <select  class="form-control"  style="width:250px;" ng-options="col1.team_name for col1 in FoldersTemplates" ng-model="selectedFolder">
                                                             </select>
                                                         </td>
-
                                                         <td>
-                                                            <select size="1" id="casenumMergeHeader" class="form-control" name="casenumberExcelHeader" style="width:250px;">
-                                                                <option>NONE</option>
-                                                                @if (Model.Recipients != null)
-                                                                {
-
-
-                                                                    var excelHeader = Model.Recipients.FirstOrDefault();
-
-
-                                                                    foreach (var column in excelHeader.Columns)
-                                                                    {
-                                                                        string selectedFolder = "";
-                                                                        if (column.Column == Model.CaseNumberExcelHeader)
-                                                                        {
-                                                                            selectedFolder = "Selected";
-
-                                                                        }
-                                                                        <!option @selectedFolder>
-                                                                            @column.Column
-                                                                        </!option>
-                                                                    }
-
-
-                                                                }
-                                                            </select>
+                                                            <select size="1" id="casenumMergeHeader"  class="form-control" style="width:250px;" ng-model="casenum" >
+                                                                <option >NONE</option>
+                                                                <option  ng-repeat="col2 in excelHeaderListRows">{{col2.Column}}</option>
+                                                             </select>
                                                         </td>
-
                                                         <td>
-                                                            <input id="loadTemplates" type="submit" value="Load Templates" class="btn btn-primary" style="float:left">
+                                                            <input id="loadTemplates" type="submit" value="Load Templates" class="btn btn-primary" ng-click="loadVendorTemplates()" style="float:left">
                                                         </td>
                                                     </tr>
                                                     <tr>
                                                     </tr>
                                                 </tbody>
-                                            </table>
-                                            <textarea id="@Html.IdFor(p => p.EmailBody)" name="@Html.IdFor(p => p.EmailBody)" hidden class="emailBodyTextVerbage"></textarea>
-                                            <input type="hidden" name="emailBody" id="templateSelect_EmailBody" />
-                                            <input type="hidden" name="emailRecipientAddress" id="templateSelect_EmailRecipient" />
-                                            <input type="hidden" name="emailSubject" id="templateSelect_EmailSubject" />
-                                            <input type="hidden" name="emailSender" id="templateSelect_EmailFrom" />
-                                            <input type="hidden" name="xslxFile" id="templateSelect_ExcelFile" />
-                                            <input type="hidden" name="folderId" id="templateSelect_TemplateFolderId" />
-                                            <input type="hidden" name="selectedFolder" id="templateSelect_TemplateFolder" />
-                                            <input type="hidden" name="casenumberExcelHeader" id="templateSelect_FolderCasenumber" />
-                                            <input type="hidden" name="txtMessage" id="templateSelect_SMS" />
-                                            <input type="hidden" name="txtRecipient" id="templateSelect_RecipientSMS" />
+                                            </table>                                           
                                         </div>
-
-
-                                    </form>
                                     <br />
                                     <div class="table-responsive mb-4 style-1">
-
-                                        <table id="template-dtListing" class="table style-1 table-hover non-hover">
+                                        <table  class="table style-1 table-hover non-hover">
                                             <thead>
                                                 <tr>
                                                     <th class="checkbox-column" style="display:none;"> Template ID </th>
@@ -568,51 +486,27 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @if (Model.MultipleTemplateProfiles != null)
-                                                {
-                                                    @foreach (var templateName in Model.MultipleTemplateProfiles)
-                                                    {
-                                                        <tr>
-                                                            <td class="checkbox-column" style="display:none;">@templateName.templateFolderID</td>
+                                                <tr ng-repeat="templateRow in templateRows">
+                                                    <td>
+                                                        {{templateRow.templateName}}
+                                                    </td>
 
-                                                            <td class="user-name">
-                                                                @templateName.Name
-                                                            </td>
-                                                            <td>
-                                                                @templateName.folderName
-                                                            </td>
-
-                                                            <td class="text-center"> <button id="btnCreateDocument" class="btn btn-primary">Create Document</button> </td>
-                                                        </tr>
-                                                    }
-                                                }
+                                                    <td>
+                                                        {{templateRow.folderName}}
+                                                    </td>
+                                                    
+                                                    <td class="text-center">
+                                                        <button id="btnCreateDocument" type="submit" class="btn btn-primary" ng-click="createDocument(templateRow)">Create Document</button>
+                                                    </td>
+                                                </tr>                                              
                                             </tbody>
-                                        </table>
-
-                                        <textarea id="@Html.IdFor(p => p.EmailBody)" name="@Html.IdFor(p => p.EmailBody)" hidden class="emailBodyTextVerbage"></textarea>
-                                        <input type="hidden" name="emailBody" id="documentCreate_EmailBody" />
-                                        <input type="hidden" name="emailSubject" id="documentCreate_EmailSubject" />
-                                        <input type="hidden" name="emailSender" id="documentCreate_EmailSender" />
-                                        <input type="hidden" name="emailRecipient" id="documentCreate_EmailRecipient" />
-                                        <input type="hidden" name="txtMessage" id="documentCreate_SMSBody" />
-                                        <input type="hidden" name="txtRecipient" id="documentCreate_SMSRecipient" />
-                                        <input type="hidden" name="folderId" id="documentCreate_TemplateFolderId" />
-                                        <input type="hidden" name="selectedFolder" id="documentCreate_TemplateFolder" />
-                                        <input type="hidden" name="casenumberExcelHeader" id="documentCreate_FolderCasenumber" />
-                                        @if (Model.SingleTemplateProfile != null)
-                                        {
-                                            <label id="templateName" style="font-size:1.2em;">@Model.SingleTemplateProfile.Name</label>
-
-                                        }
-
+                                        </table>                                  
                                         <div class="progress br-30">
                                             <div id="progress" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">0%</div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-
                             <div id="Emailer" class="row layout-top-spacing">
                                 <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                                     <div class="col-lg-12 col-12 layout-spacing">
@@ -624,7 +518,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                             <div class="widget-content widget-content-area">
                                                 <div class="form-group mb-4">
                                                     <div style="width:50%;margin-left:16%">
@@ -650,34 +543,19 @@
                                                     <br />
                                                     <div class="container-fluid">
                                                         <div>
-
                                                             <div class="row">
                                                                 <div class="container">
                                                                     <div class="row">
                                                                         <div class="col-lg-12 nopadding">
-
                                                                             <textarea id="@Html.IdFor(p => p.EmailBody)" name="@Html.IdFor(p => p.EmailBody)" hidden class="emailBodyTextVerbage"></textarea>
                                                                             <div id="summernote" class="form-control summernote">@Html.Raw(Model.EmailBody)</div>
                                                                             <input type="hidden" name="emailBody" id="sendEmail_EmailBody" />
-
                                                                         </div>
                                                                     </div>
-                                                                    <div class="row">
-                                                                        <div class="col-lg-12 nopadding">
-                                                                            <textarea style="border:none;width:950px;resize:none;">
-                                                                            @{
-                                                                                if (Model.Recipients != null)
-                                                                                {
-                                                                                    var headerRow = Model.Recipients.Where(p => p.RowIndex == 1).FirstOrDefault();
-                                                                                    foreach (var header in headerRow.Columns)
-                                                                                    {
-
-                                                                                        string field = string.Concat("[[", @header.Column.ToUpper(), "]]", " ");
-                                                                                        @field
-                                                                                    }
-                                                                                }
-                                                                            }
-                                                                            </textarea>
+                                                                   
+                                                                    <div class="row" >
+                                                                        <div class="col-lg-12 nopadding">                                                                         
+                                                                           <textarea style="border:none;width:950px;resize:none;">{{excelHeaders}}</textarea>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -710,6 +588,10 @@
                                             <label for="exampleFormControlTextarea1">Message Body</label>
                                             <textarea id="smsBody" class="form-control" form="emailer" name="txtMessage" rows="3">@Model.SMSBody</textarea>
                                         </div>
+                                        <div>
+                                            <textarea style="border:none;width:950px;resize:none;">{{excelHeaders}}</textarea>
+
+                                        </div>
                                         <div class="input-group mb-4">
                                             <input id="smsRecipient" type="text" class="form-control" form="emailer" name="txtRecipient" value="@Model.SMSRecipient" placeholder="Recipient" aria-label="Recipient's username">
 
@@ -721,20 +603,7 @@
                                         <div class="progress br-30">
                                             <div id="smsProgress" class="progress-bar bg-info" role="progressbar" style="width: 0%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">0%</div>
                                         </div>
-                                        <div>
 
-                                            @{
-                                                if (Model.Recipients != null)
-                                                {
-                                                    var headerRow = Model.Recipients.Where(p => p.RowIndex == 1).FirstOrDefault();
-                                                    foreach (var header in headerRow.Columns)
-                                                    {
-                                                        string field = string.Concat("[[", @header.Column.ToUpper(), "]]", " ");
-                                                        @field
-                                                    }
-                                                }
-                                            }
-                                        </div>
                                         <br />
 
                                     </div>
@@ -813,34 +682,7 @@
     <script src="assets/js/components/notification/custom-snackbar.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/danialfarid-angular-file-upload/12.2.13/ng-file-upload.min.js"></script>
-    <script>
-
-        c2 = $('#template-dt').DataTable({
-
-            headerCallback: function (e, a, t, n, s) {
-                e.getElementsByTagName("th")[0].innerHTML = '<label class="new-control new-checkbox checkbox-outline-info m-auto">\n<input type="checkbox" class="new-control-input chk-parent select-customers-info" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>'
-            },
-            columnDefs: [{
-                targets: 0, width: "30px", className: "", orderable: !1, render: function (e, a, t, n) {
-                    return '<label class="new-control new-checkbox checkbox-outline-info  m-auto">\n<input type="checkbox" class="new-control-input child-chk select-customers-info" id="customer-all-info">\n<span class="new-control-indicator"></span><span style="visibility:hidden">c</span>\n</label>'
-                }
-            }],
-            "oLanguage": {
-                "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },
-                "sInfo": "Showing page _PAGE_ of _PAGES_",
-                "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                "sSearchPlaceholder": "Search...",
-                "sLengthMenu": "Results :  _MENU_",
-            },
-            "lengthMenu": [5, 10, 20, 50, 100],
-            "pageLength": 5,
-
-        });
-
-        multiCheck(c2);
-
-
-    </script>
+  
 
 
 
@@ -890,147 +732,6 @@
    
 
 
-    <script>
-
-        $('.btn').click(function () {
-            var isCreated = true;
-            var table = document.getElementById('template-dtListing'), rIndex;
-            for (var i = 0; i < table.rows.length; i++) {
-
-                table.rows[i].onclick = function () {
-                    rIndex = this.rowIndex;
-                    var templateId = this.cells[0].innerHTML;
-                    var templateName = this.cells[1].innerHTML;
-
-                    var editorContent = $('#summernote').summernote('code');
-                    document.getElementById('documentCreate_EmailBody').value = editorContent;
-
-                    var subject = $('#subject').val();
-                    var sender = $('#from').val();
-                    var recipient = $('#recipientEmail').val();
-                    var xlsxFileAndPath = $('#fileAndPath').text();
-                    var smsBody = $('#smsBody').val();
-                    var smsRecipient = $('#smsRecipient').val();
-
-                    var templateFolder = document.getElementById("selectedTemplateFolder");
-                    var folderId = templateFolder.options[templateFolder.selectedIndex].value;
-                    var selectedTemplateFolder = templateFolder.options[templateFolder.selectedIndex].text;
-
-                    var casenum = document.getElementById("casenumMergeHeader");
-                    var caseNumber = casenum.options[casenum.selectedIndex].text;
-
-
-
-                    var data = { "templateID": templateId, "templateName": templateName, "templateFolderId": folderId, "excelFilePath": xlsxFileAndPath, "caseNumber": caseNumber, "selectedFolder": selectedTemplateFolder };
-
-
-
-
-                    startUpdatingDocCreateProgressIndicator();
-                    $('.btn').prop('disabled', true);
-                    //document.getElementById('.btn').disabled = true;
-                    $.ajax({
-                        type: 'post',
-                        contentType: 'application/json',
-                        datatype: "json",
-                        url: '@Url.Action("SignNowGenerateDocument", "MassMailer")',
-                        data: JSON.stringify(data),
-                        success: function (result) {
-
-
-
-
-                                stopUpdatingDocCreateProgressIndicator();
-
-                            isCreated = true;
-
-
-                            document.getElementById('documentCreate_EmailSubject').value = subject;
-                            document.getElementById('documentCreate_EmailSender').value = sender;
-                            document.getElementById('documentCreate_EmailRecipient').value = recipient;
-
-                            document.getElementById('documentCreate_SMSBody').value = smsBody;
-                            document.getElementById('documentCreate_SMSRecipient').value = smsRecipient;
-
-                            document.getElementById('documentCreate_TemplateFolderId').value = folderId;
-                            document.getElementById('documentCreate_TemplateFolder').value = selectedTemplateFolder;
-                            document.getElementById('documentCreate_FolderCasenumber').value = caseNumber;
-                            var url = new URL(window.location.href);
-                            url.searchParams.set(xlsxFileAndPath, editorContent, subject, sender, recipient, smsBody, smsRecipient, folderId, selectedTemplateFolder,caseNumber );
-                            window.location.href = url.href;
-                            location.reload(true);
-                            //document.getElementById('.btn').disabled = false;
-                            $('.btn').prop('disabled', false);
-
-                        }
-
-                    });
-                }
-            }
-        });
-
-        var intervalId;
-
-        function startUpdatingDocCreateProgressIndicator() {
-            $("#progress").show();
-
-            intervalId = setInterval(
-                function () {
-                    // We use the POST requests here to avoid caching problems (we could use the GET requests and disable the cache instead)
-                    $.post(
-                         '@Url.Action("Progress", "MassMailer")',
-                        function (progress) {
-
-                            $("#progress").css({ width: progress + "%" });
-                            $("#progress").html(progress + "%");
-                        }
-                    );
-                },
-                10
-            );
-        }
-
-        function stopUpdatingDocCreateProgressIndicator() {
-            clearInterval(intervalId);
-        }
-
-
-
-        $("#loadTemplates").click(function () {
-            const  emptyEmailBody = "<p><br></p>";
-            var emailBody = document.getElementById('@Html.IdFor(p => p.EmailBody)');
-
-            if (emailBody.innerText != emptyEmailBody) {
-                var editorContent = $('#summernote').summernote('code');
-                document.getElementById('templateSelect_EmailBody').value = editorContent;
-            }
-
-            var templateFolder = document.getElementById("selectedTemplateFolder");
-            var folderId = templateFolder.options[templateFolder.selectedIndex].value;
-            var selectedTemplateFolder = templateFolder.options[templateFolder.selectedIndex].text;
-
-            var casenum = document.getElementById("casenumMergeHeader");
-            var caseNumber = casenum.options[casenum.selectedIndex].text;
-
-            var subject = $('#subject').val();
-            var sender = $('#from').val();
-            var recipient = $('#recipientEmail').val();
-            var xlsxFileAndPath = $('#fileAndPath').text();
-            var smsBody = $('#smsBody').val();
-            var smsRecipient = $('#smsRecipient').val();
-            document.getElementById('templateSelect_EmailSubject').value = subject;
-            document.getElementById('templateSelect_EmailFrom').value = sender;
-            document.getElementById('templateSelect_EmailRecipient').value = recipient;
-            document.getElementById('templateSelect_ExcelFile').value = xlsxFileAndPath;
-            document.getElementById('templateSelect_TemplateFolder').value = selectedTemplateFolder;
-            document.getElementById('templateSelect_TemplateFolderId').value = caseNumber;
-            document.getElementById('templateSelect_SMS').value = smsBody;
-            document.getElementById('templateSelect_RecipientSMS').value = smsRecipient;
-            document.getElementById('templateSelect_TemplateFolderId').value = folderId;
-
-        });
-
-    </script>
 
 
     <script>

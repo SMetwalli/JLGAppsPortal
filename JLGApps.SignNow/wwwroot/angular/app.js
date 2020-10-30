@@ -45,6 +45,10 @@ jlgMailerApp.controller('templateController', ['$scope', '$http',  function ($sc
 
         });
       
+    $http.get('MassMailer/GetFolderTemplatesList/').then(function (response) {
+
+        $scope.FoldersTemplates = response.data.folders;
+    });
 
     $scope.delete = function (row) {
         var templateId = row.TemplateId;       
@@ -82,17 +86,62 @@ jlgMailerApp.controller('templateController', ['$scope', '$http',  function ($sc
                 document.getElementById('recipientEmail').value = response.data.EmailRecipient;
                 $('#summernote').summernote('reset');
                 $('#summernote').summernote('pasteHTML', response.data.EmailBody);
-
-                var sender = response.data.EmailSender.trim()
-               
+                var sender = response.data.EmailSender.trim()               
                 $scope.selectedMailbox = sender;
               
             })
           
-           
-
         }
 
+
+    $scope.loadVendorTemplates = function () {
+
+     
+        var folderId = $scope.selectedFolder.id;
+        var folderName = $scope.selectedFolder.team_name
+
+        var templateParameters = { 'FolderId': folderId, 'FolderName': folderName };
+        $http.post('MassMailer/SelectedTemplateFolder/', templateParameters).then(function (response) {
+            $scope.templateRows = response.data.templates;
+
+        });
+    };
+
+    $scope.createDocument = function (templateRow) {
+
+        var xlsxFileAndPath = $scope.excelFile;
+        templateRow.caseNumber = $scope.casenum;
+        templateRow.templateFolderId=$scope.selectedFolder.id
+        templateRow.excelFilePath = xlsxFileAndPath;
+        startUpdatingDocCreateProgressIndicator();
+        $http.post('MassMailer/SignNowGenerateDocument/', templateRow).then(function (response) {
+
+
+        });
+        var intervalId;
+
+        function startUpdatingDocCreateProgressIndicator() {
+            $("#progress").show();
+
+            intervalId = setInterval(
+                function () {
+                    // We use the POST requests here to avoid caching problems (we could use the GET requests and disable the cache instead)
+                    $.post('MassMailer/Progress',function (progress) {
+
+                            $("#progress").css({ width: progress + "%" });
+                            $("#progress").html(progress + "%");
+                        }
+                    );
+                },
+                10
+            );
+        }
+
+        
+    }
+    function stopUpdatingDocCreateProgressIndicator() {
+        clearInterval(intervalId);
+    }
 
         $scope.add = function (template) {
             document.getElementById("alertNewTemplate").style.display = 'none';
@@ -111,8 +160,8 @@ jlgMailerApp.controller('templateController', ['$scope', '$http',  function ($sc
         template.EmailSender = sender;
         template.EmailSubject = subject;
         template.SMSBody = smsBody;
-        template.SMSRecipient = smsRecipient;
-
+            template.SMSRecipient = smsRecipient;
+      
             $http.post('api/EmailTemplateDetails/' , template).then(function (response) {
             $scope.rows = response.data;         
 
@@ -158,17 +207,26 @@ jlgMailerApp.controller('templateController', ['$scope', '$http',  function ($sc
             headers: { 'Content-Type': undefined }
         }).then(function (response) {
           
-            $scope.recipientListRows = response.data.recipients;
+            $scope.recipientListRows = response.data.values.Recipients;          
+            $scope.excelHeaderListRows = response.data.values.Recipients[0].Columns;
             $scope.recpientViewBy = 10;
-            $scope.recipientTotalItems = response.data.recipients.length;
+            $scope.recipientTotalItems = response.data.values.Recipients.length;
             $scope.recipientCurrentPage = 1;
             $scope.recipientItemsPerPage = $scope.recpientViewBy;
             $scope.RecipientPages=5
             //$scope.maxSize = 5;
             document.getElementById("pageCountRecipientList").nodeValue = $scope.viewByRecipient;
-            document.getElementById("fileAndPath").nodeValue = file.name;
-            $scope.excelFile = file.name;
-
+            document.getElementById("fileAndPath").value = response.data.values.FileAndPath;
+           
+            $scope.excelFile = response.data.values.FileAndPath;
+           
+            var excel = response.data.values.Recipients[0];
+            var excelHeader = "";
+            for (col of excel.Columns) {
+                
+                var excelHeader = excelHeader + '[[' + col.Column + ']] ';
+                $scope.excelHeaders = excelHeader.trim();
+            }
         });
     };
 
@@ -176,7 +234,7 @@ jlgMailerApp.controller('templateController', ['$scope', '$http',  function ($sc
 
 
 
-
+  
 
 
 
