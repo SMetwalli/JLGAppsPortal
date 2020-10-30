@@ -44,7 +44,6 @@
     <!--  END CUSTOM STYLE FILE  -->
     <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
     <style>
-   
     </style>
 </head>
 <body data-spy="scroll" data-target="#navSection" data-offset="100">
@@ -277,7 +276,6 @@
 
                                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink1">
                                                                     <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal" data-target="#editModal" data-id="editModal" ng-click="selectedrowValues(row)">Update Template</a>
-
                                                                     <a class="dropdown-item" href="javascript:void(0);" ng-click="templateLoader(row)" onclick="loader1()">Load Template</a>
                                                                     <a class="dropdown-item" href="javascript:void(0);" ng-click="delete(row)">Delete Template</a>
 
@@ -289,8 +287,8 @@
                                                 </tbody>
                                             </table>
                                             <input type="hidden" id="selectedTemplateId" />
-                                          
-                                       
+
+
                                             <div class="paginating-container pagination-solid">
                                                 <ul class="pagination">
                                                     <li>
@@ -423,92 +421,90 @@
                                 </div>
                             </div>
                         </div>
-                       
+
                         <div class="row layout-spacing">
                             <div id="RecipientList" class="col-lg-12">
                                 <div class="statbox widget box box-shadow">
-                                    
-                                        <div class="widget-header">
-                                            <br />
-                                            <div class="row">
-                                                <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                                    <h3>Recipient List</h3>
-                                                </div>
+
+                                    <div class="widget-header">
+                                        <br />
+                                        <div class="row">
+                                            <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                                <h3>Recipient List</h3>
                                             </div>
+                                        </div>
 
-                                            <div class="row">
-                                                <div class="col-xl-12 col-md-12 col-sm-12 col-12">
-                                                    <div class="form-group mb-4 mt-3">
-                                                        <label for="xlsxFile">Excel File Upload (.xlsx)</label>
+                                        <div class="row">
+                                            <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                                                <div class="form-group mb-4 mt-3">
+                                                    <label for="xlsxFile">Excel File Upload (.xlsx)</label>
 
-                                                        <div class="custom-file">
-                                                            @*<input type="file" id="btnUploadedFile" class="custom-file-input" name="file" accept=".xlsx" ngf-select ng-model="file" value="Import Excel Sheet">*@
-                                                            <input type="file" id="btnUploadedFile" class="custom-file-input"  accept=".xlsx" file-model="myFile" value="Import Excel Sheet">
-                                                            <label id="fileName" class="custom-file-label" for="btnUploadedFile">Choose a excel file</label>
-                                                            <input id="btnExcelFileUpload" type="submit" ng-click="uploadFile()" value="Import Excel Sheet" class="mt-4 mb-4 btn btn-primary">
-                                                        </div>
-                                                        @{
-                                                            @if (Model != null)
+                                                    <div class="custom-file">
+                                                        @*<input type="file" id="btnUploadedFile" class="custom-file-input" name="file" accept=".xlsx" ngf-select ng-model="file" value="Import Excel Sheet">*@
+                                                        <input type="file" id="btnUploadedFile" class="custom-file-input" accept=".xlsx" file-model="myFile" value="Import Excel Sheet">
+                                                        <label id="fileName" class="custom-file-label" for="btnUploadedFile">Choose a excel file</label>
+                                                        <input id="btnExcelFileUpload" type="submit" ng-click="uploadFile()" value="Import Excel Sheet" class="mt-4 mb-4 btn btn-primary">
+                                                    </div>
+                                                    @{
+                                                        @if (Model != null)
+                                                        {
+                                                            @if (Model.FileAndPath != null)
                                                             {
-                                                                @if (Model.FileAndPath != null)
-                                                                {
-                                                                    <label id="fileAndPath">@Model.FileAndPath</label>
-                                                                }
+                                                                <label id="fileAndPath">@Model.FileAndPath</label>
                                                             }
                                                         }
-                                                        <textarea id="@Html.IdFor(p => p.EmailBody)" name="@Html.IdFor(p => p.EmailBody)" hidden class="emailBodyTextVerbage"></textarea>
-                                                        <input type="hidden" name="emailBody" id="upload_EmailBodyText" />
-                                                        <input type="hidden" name="emailSubject" id="upload_EmailSubject" />
-                                                        <input type="hidden" name="emailSender" id="upload_EmailSender" />
-                                                        <input type="hidden" name="emailRecipient" id="upload_EmailRecipient" />
-                                                        <input type="hidden" name="txtMessage" id="upload_SMSBody" />
-                                                        <input type="hidden" name="txtRecipient" id="upload_SMSRecipient" />
-                                                        <input type="hidden" name="folderId" id="upload_TemplateFolderId" />
-                                                        <input type="hidden" name="selectedFolder" id="upload_TemplateFolder" />
-                                                        <input type="hidden" name="casenumberExcelHeader" id="upload_FolderCasenumber" />
-                                                    </div>
+                                                    }
+                                                    <textarea id="@Html.IdFor(p => p.EmailBody)" name="@Html.IdFor(p => p.EmailBody)" hidden class="emailBodyTextVerbage"></textarea>
+                                                    <input type="hidden" name="emailBody" id="upload_EmailBodyText" />
+                                                    <input type="hidden" name="emailSubject" id="upload_EmailSubject" />
+                                                    <input type="hidden" name="emailSender" id="upload_EmailSender" />
+                                                    <input type="hidden" name="emailRecipient" id="upload_EmailRecipient" />
+                                                    <input type="hidden" name="txtMessage" id="upload_SMSBody" />
+                                                    <input type="hidden" name="txtRecipient" id="upload_SMSRecipient" />
+                                                    <input type="hidden" name="folderId" id="upload_TemplateFolderId" />
+                                                    <input type="hidden" name="selectedFolder" id="upload_TemplateFolder" />
+                                                    <input type="hidden" name="casenumberExcelHeader" id="upload_FolderCasenumber" />
                                                 </div>
                                             </div>
-
-                                            <div class="widget-content widget-content-area">
-                                                <div class="table-responsive mb-4 style-1">
-                                                    <div class="search-input-group-style input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text" id="basic-addon1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
-                                                        </div>
-                                                        <input type="text" class="form-control" ng-model="search" placeholder="Template Search" aria-label="Username" aria-describedby="basic-addon1">
-                                                    </div>
-                                                    <table class="table style-1 table-hover non-hover">
-                                                        <thead>
-                                                            <tr ng-repeat="recipientRow in recipientListRows" ng-if="$index == 0">
-                                                                <th  ng-repeat="col in recipientRow.Columns">{{col.Column}}</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr ng-repeat="recipientRow in recipientListRows.slice(((recipientCurrentPage-1)*recipientItemsPerPage), ((recipientCurrentPage)*recipientItemsPerPage))|filter:search" ng-if="$index > 0">
-                                                                <td ng-repeat="col in recipientRow.Columns">{{col.Column}}</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>                                                    
-                                                </div>
-                                            </div>
-                                            <select id="pageCountRecipientList" ng-model="recpientViewBy" ng-change="recipientSetItemsPerPage(recpientViewBy)" class="selectpicker mb-4" data-width="fit">
-                                                <option value="5" selected>5</option>
-                                                <option>10</option>
-                                                <option>25</option>
-                                                <option>50</option>
-                                                <option>75</option>
-                                                <option>100</option>
-                                                <option>250</option>
-                                                <option>500</option>
-                                                <option>1000</option>
-                                                <option>1500</option>
-                                                <option>All</option>
-                                            </select>
                                         </div>
-                              
+
+                                        <div class="widget-content widget-content-area">
+                                            <div class="table-responsive mb-4 style-1">
+                                                <div class="search-input-group-style input-group mb-3">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text" id="basic-addon1"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+                                                    </div>
+                                                    <input type="text" class="form-control" ng-model="search" placeholder="Template Search" aria-label="Username" aria-describedby="basic-addon1">
+                                                </div>
+                                                <table class="table style-1 table-hover non-hover">
+                                                    <thead>
+                                                        <tr ng-repeat="recipientRow in recipientListRows" ng-if="$index == 0">
+                                                            <th ng-repeat="col in recipientRow.Columns">{{col.Column}}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="recipientRow in recipientListRows.slice(((recipientCurrentPage-1)*recipientItemsPerPage), ((recipientCurrentPage)*recipientItemsPerPage))|filter:search" ng-if="$index > 0">
+                                                            <td ng-repeat="col in recipientRow.Columns">{{col.Column}}</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <select id="pageCountRecipientList" ng-model="recpientViewBy" ng-change="recipientSetItemsPerPage(recpientViewBy)" class="selectpicker mb-4" data-width="fit">
+                                            <option value="5" selected>5</option>
+                                            <option>10</option>
+                                            <option>25</option>
+                                            <option>50</option>
+                                            <option>75</option>
+                                            <option>100</option>
+                                            <option>250</option>
+                                            <option>500</option>
+                                            <option>1000</option>
+                                            <option>1500</option>
+                                            <option>All</option>
+                                        </select>
+                                    </div>
                                 </div>
-                              
                             </div>
                         </div>
                         <div id="documentCreate" class="col-lg-12">
@@ -916,13 +912,13 @@
                 height: 500,
                 spellCheck: true,
                 toolbar: [['style', ['style']],
-                    ['font', ['bold', 'underline', 'clear']],
-                    ['fontname', ['fontname']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['table', ['table']],
-                    ['insert', ['link', 'picture', 'video']],
-                    ['view', [ 'codeview']]],
+                ['font', ['bold', 'underline', 'clear']],
+                ['fontname', ['fontname']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['table', ['table']],
+                ['insert', ['link', 'picture', 'video']],
+                ['view', ['codeview']]],
             });
 
             $('#summernote').summernote('reset');
@@ -930,18 +926,15 @@
             document.getElementById("alertNewTemplate").style.display = 'none';
 
             document.getElementById('btnExcelFileUpload').style.display = 'block';
-
-         
-
         });
     </script>
 
 
- 
 
- 
-  
-   
+
+
+
+
 
     <script>
         $("#btnSendEmail").click(function () {
