@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using System.Text.Json;
 using ClosedXML.Excel;
@@ -17,8 +16,6 @@ using JLGApps.SignNow.ViewModels;
 using JLGApps.SignNow.Models.SignNow;
 using JLGApps.SignNow.Controllers.MessagingService;
 using JLGApps.SignNow.Controllers.ExcelSheet.Emailer;
-using System.Web;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace JLGApps.SignNow.Controllers
 {

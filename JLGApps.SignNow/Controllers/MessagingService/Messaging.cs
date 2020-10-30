@@ -45,19 +45,24 @@ namespace JLGApps.SignNow.Controllers.MessagingService
         }
         public void SendSMS(IDictionary<string, string> smsParameters)
         {
-            string body =  smsParameters["SMS_BODY"].ToString();
-            string phoneNumber = smsParameters["SMS_RECIPIENT"].ToString();
-            var accountSid = Environment.GetEnvironmentVariable("TWILIO_ACCOUNT_SID");
-            var authToken = Environment.GetEnvironmentVariable("TWILIO_AUTH_TOKEN");
+            try
+            {
+                string body = smsParameters["SMS_BODY"].ToString();
+                string phoneNumber = smsParameters["SMS_RECIPIENT"].ToString();
+                var accountSid = Environment.GetEnvironmentVariable("TWILIO_ACCOUNT_SID");
+                var authToken = Environment.GetEnvironmentVariable("TWILIO_AUTH_TOKEN");
 
-            TwilioClient.Init(accountSid, authToken);
+                TwilioClient.Init(accountSid, authToken);
 
-            var message = MessageResource.Create(
-                body: body,
-                from: new Twilio.Types.PhoneNumber("+12029536546"),
-                to: new Twilio.Types.PhoneNumber(phoneNumber)
-            );
-
+                var message = MessageResource.Create(
+                    body: body,
+                    from: new Twilio.Types.PhoneNumber("+12029536546"),
+                    to: new Twilio.Types.PhoneNumber(phoneNumber)
+                );
+            }catch(Exception ex)
+            {
+              
+            }
             return;
         }
     }
