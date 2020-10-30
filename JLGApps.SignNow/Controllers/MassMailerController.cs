@@ -69,128 +69,34 @@ namespace JLGApps.SignNow.Controllers
         }
         
 
-        [Route("MassMailer/Index/{excelFile?}")]
-        public ActionResult Index(string excelFile, string emailBody, string emailSubject, string emailSender, string emailRecipient,string messageAlert,string templateID,
-                                    string txtMessage,string txtRecipient, string selectedFolder, string folderId,string casenumExcelHeader)
+
+        [HttpGet]
+        [Route("MassMailer/GetFolderTemplatesList/")]
+        public ActionResult GetFolderTemplatesList()
         {
-            var mailboxes = new MailboxSelection();
-            var mailboxesList = mailboxes.GetMailboxes();
-            var RecipientLoader = new ExcelSheetLoader();
-            var envelope = new FileLoaderViewModel();
             ISignNow templates = new SignNowTemplateRequest();
-            var temp = new List<MergeFields>();
-            if (folderId != null && folderId!="NONE")
-            {
-                var templateProfile = templates.GetTemplates(_authConfiguration, selectedFolder.Trim(), folderId);
 
-                var singleTempProfile = templateProfile.Where(t => t.templateFolderID == templateID).FirstOrDefault();
-                if (singleTempProfile != null)
-                    envelope.SingleTemplateProfile = singleTempProfile;
-                if (templateProfile != null)
-                    envelope.MultipleTemplateProfiles = templateProfile;
-            }
             var templateFolders = templates.GetFolders(_authConfiguration);
-
-            if (!string.IsNullOrEmpty(excelFile))
-            {
-                var recipientsCollection = RecipientLoader.LoadWorkSheet(excelFile);
-                if (recipientsCollection != null)
-                    envelope.Recipients = recipientsCollection;
-                else
-                { messageAlert = string.Concat(messageAlert, "\n\rMissing or incomplete data in excel worksheet!!"); }
-            }
-
-            if(excelFile!=null)
-                envelope.FileAndPath = excelFile.Trim();
-            if(emailBody!=null)
-                envelope.EmailBody = emailBody.Trim();
-            if(emailSubject!=null)
-                envelope.EmailSubject = emailSubject.Trim();
-            if(emailSender!=null)
-                envelope.EmailSender = emailSender.Trim();
-            if(emailRecipient!=null)
-                envelope.EmailRecipient = emailRecipient.Trim();
-            if(mailboxesList!=null)
-                envelope.MailBoxes = mailboxesList;
-           
-            if (templateFolders != null)
-                envelope.TemplateFolderList = templateFolders;
-
-            if (selectedFolder != null)
-                envelope.SelectedTemplateFolder = selectedFolder;
-            if (casenumExcelHeader != null)
-                envelope.CaseNumberExcelHeader = casenumExcelHeader;
-
-            if (!string.IsNullOrEmpty(txtMessage))
-                envelope.SMSBody = txtMessage;
-
-            if (!string.IsNullOrEmpty(txtRecipient))
-                envelope.SMSRecipient = txtRecipient;
-
-            TempData["EXCEL_FILE"] = excelFile;
-            ViewBag.EmailBody = emailBody;
-
-            if (messageAlert != " " && messageAlert != null)
-            { ViewBag.MessageAlert = messageAlert; ViewBag.MessageExist = "True"; }
-            else
-            { ViewBag.MessageExist = "False"; }
-
-
-            return View(envelope);
+            return Json(new { folders = templateFolders.folders.Where(p=>p.name=="Team Templates") });
         }
 
-       
 
         [HttpPost]
-        [Route("MassMailer/SelectedTemplateFolder/{xslxFile?}")]
-        public ActionResult SelectedTemplateFolder(string xslxFile, string emailBody, string emailSubject, string emailSender, string emailRecipientAddress, string txtMessage,
-                                                   string txtRecipient,string selectedFolder,string folderId,string casenumberExcelHeader)
+        [Route("MassMailer/SelectedTemplateFolder/{folderParameters?}")]
+        public ActionResult SelectedTemplateFolder([FromBody]TemplateRequestParameters folderParameters)
         {
-            string excelFile = " ";
-            string body = " ";
-            string subject = " ";
-            string sender = " ";
-            string recipient = " ";
-            string smsMessage = " ";
-            string smsRecipient = " ";
-            string casenumExcelHeader = " ";
-
-            if (!string.IsNullOrEmpty(emailBody))
-                body = emailBody.Trim();
-            if (!string.IsNullOrEmpty(emailSubject))
-                subject = emailSubject.Trim();
-            if (!string.IsNullOrEmpty(emailSender))
-                sender = emailSender.Trim();
-            if (!string.IsNullOrEmpty(emailRecipientAddress))
-                recipient = emailRecipientAddress.Trim();
-            if (!string.IsNullOrEmpty(xslxFile))
-                excelFile = xslxFile.Trim();
-            if (!string.IsNullOrEmpty(txtMessage))
-                smsMessage = txtMessage.Trim();
-            if (!string.IsNullOrEmpty(txtRecipient))
-                smsRecipient = txtRecipient.Trim();
-            if (!string.IsNullOrEmpty(casenumberExcelHeader))
-                casenumExcelHeader = casenumberExcelHeader.Trim();
-
-            return RedirectToAction("Index", new
+            string folderId = folderParameters.FolderId;
+            string folderName = folderParameters.FolderName;
+            ISignNow templates = new SignNowTemplateRequest();
+          
+            if (folderId != null && folderId != "NONE")
             {
-                excelFile = excelFile,
-                emailBody = body,
-                emailSubject = subject,
-                emailSender = sender,
-                emailRecipient = recipient,
-                emailSentToRecipient = false,
-                messageAlert = " ",
-                templateID = "",
-                txtMessage = smsMessage,
-                txtRecipient = smsRecipient,
-                selectedFolder= selectedFolder,
-                folderId= folderId,
-                casenumExcelHeader = casenumberExcelHeader
+                var templateProfile = templates.GetTemplates(_authConfiguration,  folderId, folderName.Trim());
+                return Json(new { templates = templateProfile });
+            }
 
-            });
+            return null;
         }
-
 
         [HttpPost]  
         [Route("MassMailer/LoadData/{xslxFile?}")]
@@ -221,8 +127,9 @@ namespace JLGApps.SignNow.Controllers
 
                     if (excelRecipients != null)
                     {
+                        envelope.FileAndPath = excelFile;
                         envelope.Recipients = excelRecipients;
-                        return Json(new { recipients = envelope.Recipients });
+                        return Json(new { values = envelope });
                     }
 
                 }
@@ -247,7 +154,7 @@ namespace JLGApps.SignNow.Controllers
         public ActionResult SendEmail([FromBody] SendEmail emailParameters)
          {
             const string  repositoryPath = "C:\\Bulk Mailer\\";
-            //string recipient = "kwilliams@johnsonlawgroup.com";
+           
             dynamic results = "";
             string excelFile = "";
             string body = "";
@@ -335,7 +242,7 @@ namespace JLGApps.SignNow.Controllers
                             var EmailerHost = new Messaging(_authConfiguration);
 
                             //Dictionary for Mailgun
-                            email = new Dictionary<string, string>()
+                        email = new Dictionary<string, string>()
                         {
                                 { "EMAIL_RECIPIENT", recipient},
                                 { "EMAIL_BODY", body.Trim()},
@@ -345,7 +252,7 @@ namespace JLGApps.SignNow.Controllers
                             EmailerHost.SendEmail(email);
 
                             Task.Delay(2000);
-
+                          
                         }
 
                         messageAlert = "All emails have been sent to recipients.";
@@ -356,6 +263,7 @@ namespace JLGApps.SignNow.Controllers
                 {
                     if (!string.IsNullOrEmpty(subject) && !string.IsNullOrEmpty(body) && !string.IsNullOrEmpty(sender) && !string.IsNullOrEmpty(recipient) && !recipient.Contains("[["))
                     {
+                       
                         //VALIDATE FOR A VALID EMAIL ADDRESS
                         try
                         {
@@ -372,6 +280,7 @@ namespace JLGApps.SignNow.Controllers
 
                             EmailerHost.SendEmail(email);
                             messageAlert = "All emails have been sent to recipients.";
+                            Startup.Progress = 100;
                         }
                         catch (FormatException ex)
                         {
