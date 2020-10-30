@@ -427,7 +427,7 @@
                         <div class="row layout-spacing">
                             <div id="RecipientList" class="col-lg-12">
                                 <div class="statbox widget box box-shadow">
-                                    <form name="form">
+                                    
                                         <div class="widget-header">
                                             <br />
                                             <div class="row">
@@ -506,7 +506,7 @@
                                                 <option>All</option>
                                             </select>
                                         </div>
-                                    </form>
+                              
                                 </div>
                               
                             </div>
@@ -931,18 +931,8 @@
 
             document.getElementById('btnExcelFileUpload').style.display = 'block';
 
-            $('#addTemplateModal').on('hidden.bs.modal', function () {
-                $(this).find('form')[0].reset();
-            });
+         
 
-
-            var message ='@(ViewBag.MessageExist)';
-            if (message == 'False') {
-                $("#zoomupModal").hide();
-            } else if (message == 'True') {
-                $("#zoomupModal").show();
-
-            }
         });
     </script>
 
@@ -950,202 +940,8 @@
  
 
  
-    <script>
-        $("#btnExcelFileUpload").click(function () {
-
-            var editorContent = $('#summernote').summernote('code');
-            document.getElementById('upload_EmailBodyText').value = editorContent;
-            var subject = $('#subject').val();
-            var sender = $('#from').val();
-            var recipient = $('#recipientEmail').val();
-            var smsBody = $('#smsBody').val();
-            var smsRecipient = $('#smsRecipient').val();
-
-            var templateFolder = document.getElementById("selectedTemplateFolder");
-            var folderId = templateFolder.options[templateFolder.selectedIndex].value;
-            var selectedTemplateFolder = templateFolder.options[templateFolder.selectedIndex].text;
-
-            var casenum = document.getElementById("casenumMergeHeader");
-            var caseNumber = casenum.options[casenum.selectedIndex].text;
-
-            document.getElementById('upload_EmailSubject').value = subject;
-            document.getElementById('upload_EmailSender').value = sender;
-            document.getElementById('upload_EmailRecipient').value = recipient;
-
-            document.getElementById('upload_SMSBody').value = smsBody;
-            document.getElementById('upload_SMSRecipient').value = smsRecipient;
-
-            document.getElementById('upload_TemplateFolderId').value = folderId;
-            document.getElementById('upload_TemplateFolder').value = selectedTemplateFolder;
-            document.getElementById('upload_FolderCasenumber').value = caseNumber;
-
-            //document.getElementById('btnExcelFileUpload').style.display = 'none';
-        });
-
-
-
-
-        $('#btnUploadedFile').click(function () {
-
-            const fileBtn = document.getElementById('btnUploadedFile');
-            const fileLbl = document.getElementById('fileName');
-
-            fileBtn.addEventListener("change", function () {
-                if (fileBtn.value) {
-                    fileLbl.innerHTML = fileBtn.value.match(/[\/\\]([\w\d\s\.\-\(\)]+)$/)[1];
-                } else {
-                    fileLbl.innerHTML = "Choose a file";
-                }
-            });
-
-        });
-
-
-    </script>
-
-
-    <script>
-
-        $('.btn').click(function () {
-            var isCreated = true;
-            var table = document.getElementById('template-dtListing'), rIndex;
-            for (var i = 0; i < table.rows.length; i++) {
-
-                table.rows[i].onclick = function () {
-                    rIndex = this.rowIndex;
-                    var templateId = this.cells[0].innerHTML;
-                    var templateName = this.cells[1].innerHTML;
-
-                    var editorContent = $('#summernote').summernote('code');
-                    document.getElementById('documentCreate_EmailBody').value = editorContent;
-
-                    var subject = $('#subject').val();
-                    var sender = $('#from').val();
-                    var recipient = $('#recipientEmail').val();
-                    var xlsxFileAndPath = $('#fileAndPath').text();
-                    var smsBody = $('#smsBody').val();
-                    var smsRecipient = $('#smsRecipient').val();
-
-                    var templateFolder = document.getElementById("selectedTemplateFolder");
-                    var folderId = templateFolder.options[templateFolder.selectedIndex].value;
-                    var selectedTemplateFolder = templateFolder.options[templateFolder.selectedIndex].text;
-
-                    var casenum = document.getElementById("casenumMergeHeader");
-                    var caseNumber = casenum.options[casenum.selectedIndex].text;
-
-
-
-                    var data = { "templateID": templateId, "templateName": templateName, "templateFolderId": folderId, "excelFilePath": xlsxFileAndPath, "caseNumber": caseNumber, "selectedFolder": selectedTemplateFolder };
-
-
-
-
-                    startUpdatingDocCreateProgressIndicator();
-                    $('.btn').prop('disabled', true);
-                    //document.getElementById('.btn').disabled = true;
-                    $.ajax({
-                        type: 'post',
-                        contentType: 'application/json',
-                        datatype: "json",
-                        url: '@Url.Action("SignNowGenerateDocument", "MassMailer")',
-                        data: JSON.stringify(data),
-                        success: function (result) {
-
-
-
-
-                                stopUpdatingDocCreateProgressIndicator();
-
-                            isCreated = true;
-
-
-                            document.getElementById('documentCreate_EmailSubject').value = subject;
-                            document.getElementById('documentCreate_EmailSender').value = sender;
-                            document.getElementById('documentCreate_EmailRecipient').value = recipient;
-
-                            document.getElementById('documentCreate_SMSBody').value = smsBody;
-                            document.getElementById('documentCreate_SMSRecipient').value = smsRecipient;
-
-                            document.getElementById('documentCreate_TemplateFolderId').value = folderId;
-                            document.getElementById('documentCreate_TemplateFolder').value = selectedTemplateFolder;
-                            document.getElementById('documentCreate_FolderCasenumber').value = caseNumber;
-                            var url = new URL(window.location.href);
-                            url.searchParams.set(xlsxFileAndPath, editorContent, subject, sender, recipient, smsBody, smsRecipient, folderId, selectedTemplateFolder,caseNumber );
-                            window.location.href = url.href;
-                            location.reload(true);
-                            //document.getElementById('.btn').disabled = false;
-                            $('.btn').prop('disabled', false);
-
-                        }
-
-                    });
-                }
-            }
-        });
-
-        var intervalId;
-
-        function startUpdatingDocCreateProgressIndicator() {
-            $("#progress").show();
-
-            intervalId = setInterval(
-                function () {
-                    // We use the POST requests here to avoid caching problems (we could use the GET requests and disable the cache instead)
-                    $.post(
-                         '@Url.Action("Progress", "MassMailer")',
-                        function (progress) {
-
-                            $("#progress").css({ width: progress + "%" });
-                            $("#progress").html(progress + "%");
-                        }
-                    );
-                },
-                10
-            );
-        }
-
-        function stopUpdatingDocCreateProgressIndicator() {
-            clearInterval(intervalId);
-        }
-
-
-
-        $("#loadTemplates").click(function () {
-            const  emptyEmailBody = "<p><br></p>";
-            var emailBody = document.getElementById('@Html.IdFor(p => p.EmailBody)');
-
-            if (emailBody.innerText != emptyEmailBody) {
-                var editorContent = $('#summernote').summernote('code');
-                document.getElementById('templateSelect_EmailBody').value = editorContent;
-            }
-
-            var templateFolder = document.getElementById("selectedTemplateFolder");
-            var folderId = templateFolder.options[templateFolder.selectedIndex].value;
-            var selectedTemplateFolder = templateFolder.options[templateFolder.selectedIndex].text;
-
-            var casenum = document.getElementById("casenumMergeHeader");
-            var caseNumber = casenum.options[casenum.selectedIndex].text;
-
-            var subject = $('#subject').val();
-            var sender = $('#from').val();
-            var recipient = $('#recipientEmail').val();
-            var xlsxFileAndPath = $('#fileAndPath').text();
-            var smsBody = $('#smsBody').val();
-            var smsRecipient = $('#smsRecipient').val();
-            document.getElementById('templateSelect_EmailSubject').value = subject;
-            document.getElementById('templateSelect_EmailFrom').value = sender;
-            document.getElementById('templateSelect_EmailRecipient').value = recipient;
-            document.getElementById('templateSelect_ExcelFile').value = xlsxFileAndPath;
-            document.getElementById('templateSelect_TemplateFolder').value = selectedTemplateFolder;
-            document.getElementById('templateSelect_TemplateFolderId').value = caseNumber;
-            document.getElementById('templateSelect_SMS').value = smsBody;
-            document.getElementById('templateSelect_RecipientSMS').value = smsRecipient;
-            document.getElementById('templateSelect_TemplateFolderId').value = folderId;
-
-        });
-
-    </script>
-
+  
+   
 
     <script>
         $("#btnSendEmail").click(function () {
