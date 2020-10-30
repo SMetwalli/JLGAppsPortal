@@ -47,27 +47,33 @@ namespace JLGApps.SignNow.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmailTemplateDetail(int id, EmailTemplateDetail emailTemplateDetail)
         {
-            if (id != emailTemplateDetail.TemplateId)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(emailTemplateDetail).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
+                if (id != emailTemplateDetail.TemplateId)
+                {
+                    return BadRequest();
+                }
+
+                _context.Entry(emailTemplateDetail).State = EntityState.Modified;
+
+                try
+                {
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EmailTemplateDetailExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+            }catch(Exception ex)
             {
-                if (!EmailTemplateDetailExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+
             }
 
             return NoContent();
